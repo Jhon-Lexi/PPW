@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutique Moderna | Ropa y Accesorios</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+    <!-- Encabezado Modulado -->
+    <header class="main-header">
+        <nav class="navbar">
+            <div class="logo">MODA-APP</div>
+            <ul class="nav-links">
+                <li><a href="#">Ropa</a></li>
+                <li><a href="#">Accesorios</a></li>
+            </ul>
+            <div class="cart-icon">
+                🛒 <span id="cart-count">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Nueva Colección 2026</h1>
+            <p>Encuentra tu estilo único.</p>
+        </section>
+
+        <!-- Contenedor de Productos -->
+        <section id="product-grid" class="product-grid">
+            <!-- Los productos se cargarán dinámicamente con JS (Unidad 3) -->
+        </section>
+    </main>
+    <!-- Dentro del body, al final de <main> -->
+<div id="cart-modal" class="cart-hidden">
+    <div class="cart-content">
+        <h2>Tu Carrito</h2>
+        <ul id="cart-items-list">
+            <!-- Se llena con JS -->
+        </ul>
+        <div class="cart-total">
+            Total: $<span id="total-price">0</span>
+        </div>
+        <button class="btn-checkout">Finalizar Compra</button>
+        <button onclick="toggleCart()">Cerrar</button>
+    </div>
+</div>
+
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

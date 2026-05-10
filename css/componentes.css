@@ -1,0 +1,51 @@
+/* Componente de Tarjeta de Producto */
+.product-card {
+    border: 1px solid #eee;
+    padding: 15px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.product-image {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border-radius: 8px;
+}
+
+.btn-add {
+    background-color: #222;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* js/components.css */
+#cart-modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 100%;
+    background: white;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+    padding: 20px;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.cart-hidden {
+    transform: translateX(100%); /* Lo esconde a la derecha */
+}
+
+/* Cuando le quitemos la clase .cart-hidden, aparecerá */
