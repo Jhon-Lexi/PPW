@@ -1,0 +1,183 @@
+/* ==========================================
+   ESTILOS DE VISTAS / PÁGINAS INDIVIDUALES
+   ========================================== */
+
+#app {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --- HOME PAGE --- */
+.hero {
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(rgba(13, 13, 19, 0.8), rgba(13, 13, 19, 0.9)), url('https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1200&q=80');
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
+    border: 2px solid var(--bttf-orange);
+    margin-bottom: 40px;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.about-section {
+    background: var(--panel-bg);
+    padding: 30px;
+    border-radius: 8px;
+    border-left: 5px solid var(--bttf-cyan);
+}
+
+.about-section h2 {
+    margin-bottom: 15px;
+}
+
+.about-section p {
+    line-height: 1.6;
+    color: #ccc;
+}
+
+.about-section blockquote {
+    margin-top: 20px;
+    font-style: italic;
+    color: var(--bttf-yellow);
+    border-left: 2px solid var(--bttf-yellow);
+    padding-left: 10px;
+}
+
+/* --- CATALOG PAGE --- */
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.cart-preview {
+    margin-top: 50px;
+    background: var(--panel-bg);
+    border: 2px dashed var(--bttf-yellow);
+    padding: 25px;
+    border-radius: 8px;
+}
+
+/* --- CONTACT PAGE --- */
+.contact-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+@media (max-width: 768px) {
+    .contact-container { grid-template-columns: 1fr; }
+}
+
+#contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: var(--panel-bg);
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid #2a2a3a;
+}
+
+#contact-form input, #contact-form textarea {
+    background: #0d0d13;
+    border: 1px solid #444;
+    color: #fff;
+    padding: 12px;
+    border-radius: 4px;
+}
+
+#contact-form input:focus, #contact-form textarea:focus {
+    border-color: var(--bttf-orange);
+    outline: none;
+}
+
+/* --- AUTH PAGE --- */
+.auth-box {
+    max-width: 450px;
+    margin: 40px auto;
+    background: var(--panel-bg);
+    border: 2px solid var(--bttf-cyan);
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+}
+
+.auth-tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #333;
+}
+
+.auth-tabs button {
+    background: none;
+    border: none;
+    color: #888;
+    padding: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    width: 50%;
+}
+
+.auth-tabs button.active {
+    color: var(--bttf-cyan);
+    border-bottom: 3px solid var(--bttf-cyan);
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* --- ADMIN DASHBOARD --- */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.metric-card {
+    background: #11111a;
+    border: 1px solid var(--bttf-orange);
+    padding: 20px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.metric-card p {
+    font-family: var(--digital-font);
+    font-size: 1.8rem;
+    color: var(--bttf-yellow);
+}
+
+.add-product-admin {
+    background: var(--panel-bg);
+    padding: 25px;
+    border-radius: 8px;
+}
+
+#admin-product-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+#admin-product-form input {
+    background: #0d0d13;
+    border: 1px solid #444;
+    color: #fff;
+    padding: 12px;
+    border-radius: 4px;
+}
