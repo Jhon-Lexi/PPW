@@ -1,8 +1,20 @@
 // Simulación de base de datos de productos (Posteriormente vendrán de Supabase)
 const mockProducts = [
-    { id: 1, name: "Capacitor de Flujo", price: 1200, img: "https://via.placeholder.com/150", desc: "Hace posible los viajes en el tiempo." },
-    { id: 2, name: "Hoverboard (2015)", price: 350, img: "https://via.placeholder.com/150", desc: "¡Vuela! No funciona sobre el agua a menos que tengas potencia." },
-    { id: 3, name: "Plutonio (1 Pastilla)", price: 5000, img: "https://via.placeholder.com/150", desc: "Genera los 1.21 GW necesarios." }
+    { id: 1,
+    name: "Capacitor de Flujo", 
+    price: 1200,
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1nqDrOu5iF7S02P35fzuG6Ot5q-A6D0SLYA&s", 
+    desc: "Hace posible los viajes en el tiempo." },
+    { id: 2, 
+    name: "Hoverboard (2015)", 
+    price: 350, 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKvbdWOIKTUO7UY3WImHpjq4L4SF8LFYnJNA&s", 
+    desc: "¡Vuela! No funciona sobre el agua a menos que tengas potencia." },
+    { id: 3, 
+    name: "Plutonio ", 
+    price: 5000, 
+    img: "https://preview.redd.it/would-the-radiation-from-the-plutonium-have-on-an-effect-on-v0-r15bn0azs6df1.jpg?width=640&crop=smart&auto=webp&s=0f8245bdf48ef7bda0c0a3514f7e55f25f20e7e1", 
+    desc: "Genera los 1.21 GW necesarios." }
 ];
 
 let cart = JSON.parse(localStorage.getItem('bttf_cart')) || [];
