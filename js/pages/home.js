@@ -8,7 +8,7 @@ export function renderHome(container) {
         <section class="about-section">
             <h2 class="cyan-neon">Nuestra Historia (Y Futuro)</h2>
             <p>Fundada en el garaje del Dr. Emmett Brown en Hill Valley, California, nuestra tienda se encarga de proveer suministros de alta calidad para viajeros del tiempo experimentados y novatos.</p>
-            <blockquote>"Si vas a viajar en el tiempo, ¿por qué no hacerlo con estilo?"</blockquote>
+            <blockquote>"Si vas a viajar en el tiempo, ¿por qué no hacerlo con estilo?" — Doc Brown</blockquote>
         </section>
     `;
 }

@@ -21,7 +21,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Efecto de Neón para títulos */
 .neon-text {
     color: #fff;
     text-shadow: 0 0 5px #fff, 0 0 10px var(--bttf-orange), 0 0 20px var(--bttf-orange);
