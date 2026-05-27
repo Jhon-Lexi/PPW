@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda - ShopExpress</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+</head>
+<body>
+  <div id="toast-container" class="toast-container"></div>
+  <header class="header"></header>
+
+  <section class="section">
+    <h2 class="section-title">Nuestros productos</h2>
+    <p class="section-subtitle">Explora, filtra y encuentra lo que buscas</p>
+
+    <div class="filtros-bar">
+      <input type="text" id="filtro-busqueda" placeholder="Buscar productos..." style="flex:2;min-width:200px;">
+      <select id="filtro-categoria">
+        <option value="">Todas las categorías</option>
+      </select>
+      <select id="filtro-orden">
+        <option value="">Ordenar por</option>
+        <option value="precio-asc">Menor precio</option>
+        <option value="precio-desc">Mayor precio</option>
+        <option value="nombre">A-Z</option>
+      </select>
+    </div>
+
+    <div class="productos-grid" id="productos-grid">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Cargando productos...</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <h4>ShopExpress</h4>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">Tu tienda online de confianza.</p>
+      </div>
+      <div>
+        <h4>Enlaces</h4>
+        <a href="/">Inicio</a>
+        <a href="/nosotros.html">Nosotros</a>
+        <a href="/contacto.html">Contacto</a>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">📞 +51 999 888 777</p>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">✉️ hola@shopexpress.com</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ShopExpress. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="js/cart.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/products.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', initCatalogo);
+  </script>
+</body>
+</html>

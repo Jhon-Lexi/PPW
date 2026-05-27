@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nosotros - ShopExpress</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+</head>
+<body>
+  <div id="toast-container" class="toast-container"></div>
+  <header class="header"></header>
+
+  <section class="section">
+    <div class="nosotros-grid">
+      <div>
+        <h2 class="section-title" style="text-align:left;">Nuestra historia</h2>
+        <p class="section-subtitle" style="text-align:left;margin-left:0;">Conoce más sobre ShopExpress</p>
+        <p style="color:#475569;line-height:1.8;margin-bottom:16px;">
+          ShopExpress nació en 2022 con una misión clara: hacer que las compras online sean 
+          rápidas, seguras y accesibles para todos. Lo que comenzó como un pequeño proyecto 
+          entre amigos, hoy es una de las tiendas online más confiables del país.
+        </p>
+        <p style="color:#475569;line-height:1.8;margin-bottom:16px;">
+          Nos apasiona ofrecer productos de alta calidad a precios justos. Trabajamos 
+          directamente con fabricantes y distribuidores para garantizar los mejores precios 
+          sin sacrificar la calidad.
+        </p>
+        <p style="color:#475569;line-height:1.8;">
+          Hoy contamos con más de 10,000 clientes satisfechos y un equipo de 50 personas 
+          dedicadas a brindarte la mejor experiencia de compra.
+        </p>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600" alt="Nuestro equipo" class="nosotros-image" onerror="this.src='https://via.placeholder.com/600x400?text=Nosotros'">
+      </div>
+    </div>
+
+    <div class="valores-grid">
+      <div class="valor-card">
+        <div class="valor-icon">🎯</div>
+        <h4>Misión</h4>
+        <p>Ofrecer productos de calidad con la mejor experiencia de compra online.</p>
+      </div>
+      <div class="valor-card">
+        <div class="valor-icon">🔭</div>
+        <h4>Visión</h4>
+        <p>Ser la tienda online líder en Latinoamérica para 2028.</p>
+      </div>
+      <div class="valor-card">
+        <div class="valor-icon">💎</div>
+        <h4>Calidad</h4>
+        <p>Solo trabajamos con productos que cumplen los más altos estándares.</p>
+      </div>
+      <div class="valor-card">
+        <div class="valor-icon">❤️</div>
+        <h4>Compromiso</h4>
+        <p>La satisfacción de nuestros clientes es nuestra prioridad número uno.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <h4>ShopExpress</h4>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">Tu tienda online de confianza.</p>
+      </div>
+      <div>
+        <h4>Enlaces</h4>
+        <a href="/">Inicio</a>
+        <a href="/catalogo.html">Tienda</a>
+        <a href="/contacto.html">Contacto</a>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">📞 +51 999 888 777</p>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">✉️ hola@shopexpress.com</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ShopExpress. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="js/cart.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadHeader();
+      initAuth();
+    });
+  </script>
+</body>
+</html>

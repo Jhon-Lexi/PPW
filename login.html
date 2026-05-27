@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión - ShopExpress</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+</head>
+<body>
+  <div id="toast-container" class="toast-container"></div>
+  <header class="header"></header>
+
+  <div class="form-container">
+    <h2>Iniciar sesión</h2>
+    <p>Ingresa con tu correo y contraseña</p>
+    <div id="alert-container"></div>
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" placeholder="tu@correo.com" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" placeholder="••••••" required>
+      </div>
+      <button type="submit" class="btn btn-primary w-full btn-lg">Ingresar</button>
+    </form>
+    <div class="form-footer">
+      ¿No tienes cuenta? <a href="/registro.html">Regístrate</a>
+    </div>
+    <div style="margin-top:32px;padding-top:24px;border-top:1px solid #e2e8f0;">
+      <p style="text-align:center;font-size:0.85rem;color:#94a3b8;margin-bottom:12px;">Usuarios de prueba:</p>
+      <div style="display:grid;gap:8px;font-size:0.85rem;">
+        <div style="padding:10px;background:#f8fafc;border-radius:6px;">
+          <strong>Cliente:</strong> cliente@prueba.com / 123456
+        </div>
+        <div style="padding:10px;background:#f8fafc;border-radius:6px;">
+          <strong>Admin:</strong> admin@prueba.com / admin123
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <h4>ShopExpress</h4>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">Tu tienda online de confianza.</p>
+      </div>
+      <div>
+        <h4>Enlaces</h4>
+        <a href="/">Inicio</a>
+        <a href="/catalogo.html">Tienda</a>
+        <a href="/contacto.html">Contacto</a>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">📞 +51 999 888 777</p>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">✉️ hola@shopexpress.com</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ShopExpress. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="js/cart.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const alertDiv = document.getElementById('alert-container');
+
+      alertDiv.innerHTML = '<div class="alert" style="background:#f0fdf4;color:#10b981;border:1px solid #bbf7d0;">Iniciando sesión...</div>';
+
+      const result = await loginUser(email, password);
+
+      if (result.error) {
+        alertDiv.innerHTML = `<div class="alert alert-error">${result.error}</div>`;
+      } else {
+        alertDiv.innerHTML = '<div class="alert alert-success">¡Sesión iniciada! Redirigiendo...</div>';
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect') || '/';
+        setTimeout(() => window.location.href = redirect, 500);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadHeader();
+      initAuth();
+    });
+  </script>
+</body>
+</html>
