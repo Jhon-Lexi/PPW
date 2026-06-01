@@ -1,287 +1,569 @@
-// ============================================
-// ADMIN - Dashboard y CRUD
-// ============================================
+// ============================================================
+// MÓDULO DE ADMINISTRACIÓN
+// CRUD de productos, eventos, usuarios y dashboard
+// ============================================================
 
-// Cargar dashboard
-async function loadDashboard() {
-  if (!requireAdmin()) return;
-  const container = document.getElementById('dashboard-content');
+// ============================================================
+// DASHBOARD - Estadísticas
+// ============================================================
+async function cargarEstadisticas() {
+  try {
+    const [productos, categorias, eventos, pedidos] = await Promise.all([
+      supabase.from('productos').select('count', { count: 'exact' }),
+      supabase.from('categorias').select('count', { count: 'exact' }),
+      supabase.from('eventos').select('count', { count: 'exact' }),
+      supabase.from('pedidos').select('count', { count: 'exact' })
+    ]);
+
+    document.getElementById('total-productos').textContent = productos.count ?? 0;
+    document.getElementById('total-categorias').textContent = categorias.count ?? 0;
+    document.getElementById('total-eventos').textContent = eventos.count ?? 0;
+    document.getElementById('total-pedidos').textContent = pedidos.count ?? 0;
+  } catch (error) {
+    console.error('Error cargando estadísticas:', error.message);
+  }
+}
+
+/**
+ * Carga mensajes recientes de contacto para el dashboard
+ */
+async function cargarMensajesRecientes() {
+  const container = document.getElementById('mensajes-recientes');
   if (!container) return;
 
-  const productos = await getProductos();
-  const { data: pedidos } = await supabaseClient.from('pedidos').select('*');
-  const totalVentas = pedidos?.filter(p => p.estado !== 'cancelado').reduce((sum, p) => sum + parseFloat(p.total), 0) || 0;
+  try {
+    const { data, error } = await supabase
+      .from('contactos')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(5);
 
-  container.innerHTML = `
-    <h1>Dashboard</h1>
-    <div class="admin-stats">
-      <div class="admin-stat-card">
-        <h4>Productos</h4>
-        <div class="number">${productos.length}</div>
-      </div>
-      <div class="admin-stat-card">
-        <h4>Pedidos</h4>
-        <div class="number">${pedidos?.length || 0}</div>
-      </div>
-      <div class="admin-stat-card">
-        <h4>Ventas totales</h4>
-        <div class="number">S/ ${totalVentas.toFixed(2)}</div>
-      </div>
-      <div class="admin-stat-card">
-        <h4>Productos bajos</h4>
-        <div class="number" style="color:var(--danger)">${productos.filter(p => parseFloat(p.precio) < 30).length}</div>
-      </div>
-    </div>
-    <div style="background:white;border-radius:12px;padding:28px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-      <h3 style="font-weight:700;margin-bottom:16px;">Accesos rápidos</h3>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;">
-        <a href="/admin/productos.html" class="btn btn-primary">Gestionar productos</a>
-        <a href="/admin/pedidos.html" class="btn btn-secondary">Ver pedidos</a>
-        <a href="/catalogo.html" class="btn btn-secondary">Ver tienda</a>
-      </div>
-    </div>
-  `;
-}
+    if (error) throw error;
 
-// Cargar lista de productos (admin)
-async function loadAdminProductos() {
-  if (!requireAdmin()) return;
-  const container = document.getElementById('admin-productos');
-  if (!container) return;
+    if (!data || data.length === 0) {
+      container.innerHTML = '<p style="color: var(--text-muted);">No hay mensajes nuevos.</p>';
+      return;
+    }
 
-  const productos = await getProductos();
-  let html = `
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-bottom:24px;">
-      <h1>Productos</h1>
-      <button class="btn btn-primary" onclick="showProductModal()">+ Nuevo producto</button>
-    </div>
-    <div style="overflow-x:auto;">
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>Imagen</th>
-          <th>Nombre</th>
-          <th>Categoría</th>
-          <th>Precio</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
-
-  productos.forEach(p => {
-    html += `
-      <tr>
-        <td><img src="${p.imagen || 'https://via.placeholder.com/60'}" style="width:50px;height:50px;object-fit:cover;border-radius:6px;" onerror="this.src='https://via.placeholder.com/60'"></td>
-        <td><strong>${p.nombre}</strong></td>
-        <td>${p.categoria || 'General'}</td>
-        <td><strong>S/ ${parseFloat(p.precio).toFixed(2)}</strong></td>
-        <td>
-          <div style="display:flex;gap:6px;">
-            <button class="btn btn-secondary btn-sm" onclick='editProduct(${JSON.stringify(p)})'>✏️</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">🗑️</button>
-          </div>
-        </td>
-      </tr>
-    `;
-  });
-
-  html += '</tbody></table></div>';
-  container.innerHTML = html;
-}
-
-// Mostrar modal de producto
-function showProductModal(producto = null) {
-  const isEdit = !!producto;
-  const overlay = document.getElementById('product-modal');
-  if (!overlay) {
-    const div = document.createElement('div');
-    div.id = 'product-modal';
-    div.className = 'modal-overlay';
-    div.innerHTML = `
-      <div class="modal">
-        <h3 id="modal-title">${isEdit ? 'Editar producto' : 'Nuevo producto'}</h3>
-        <form id="product-form" onsubmit="saveProduct(event)">
-          <input type="hidden" id="product-id" value="${isEdit ? producto.id : ''}">
-          <div class="form-group">
-            <label>Nombre</label>
-            <input type="text" id="product-nombre" value="${isEdit ? producto.nombre : ''}" required>
-          </div>
-          <div class="form-group">
-            <label>Descripción</label>
-            <textarea id="product-desc">${isEdit ? (producto.descripcion || '') : ''}</textarea>
-          </div>
-          <div class="form-group">
-            <label>Precio</label>
-            <input type="number" id="product-precio" step="0.01" value="${isEdit ? producto.precio : ''}" required>
-          </div>
-          <div class="form-group">
-            <label>URL de imagen</label>
-            <input type="url" id="product-imagen" value="${isEdit ? (producto.imagen || '') : ''}">
-          </div>
-          <div class="form-group">
-            <label>Categoría</label>
-            <select id="product-categoria">
-              <option value="electronica" ${isEdit && producto.categoria === 'electronica' ? 'selected' : ''}>Electrónica</option>
-              <option value="accesorios" ${isEdit && producto.categoria === 'accesorios' ? 'selected' : ''}>Accesorios</option>
-              <option value="deportes" ${isEdit && producto.categoria === 'deportes' ? 'selected' : ''}>Deportes</option>
-              <option value="ropa" ${isEdit && producto.categoria === 'ropa' ? 'selected' : ''}>Ropa</option>
-              <option value="hogar" ${isEdit && producto.categoria === 'hogar' ? 'selected' : ''}>Hogar</option>
-              <option value="general" ${isEdit && producto.categoria === 'general' ? 'selected' : ''}>General</option>
-            </select>
-          </div>
-          <div style="display:flex;gap:12px;margin-top:24px;">
-            <button type="submit" class="btn btn-primary" style="flex:1;">${isEdit ? 'Actualizar' : 'Crear'}</button>
-            <button type="button" class="btn btn-secondary" onclick="closeProductModal()">Cancelar</button>
-          </div>
-        </form>
-      </div>
-    `;
-    document.body.appendChild(div);
-  } else {
-    document.getElementById('modal-title').textContent = isEdit ? 'Editar producto' : 'Nuevo producto';
-    document.getElementById('product-id').value = isEdit ? producto.id : '';
-    document.getElementById('product-nombre').value = isEdit ? producto.nombre : '';
-    document.getElementById('product-desc').value = isEdit ? (producto.descripcion || '') : '';
-    document.getElementById('product-precio').value = isEdit ? producto.precio : '';
-    document.getElementById('product-imagen').value = isEdit ? (producto.imagen || '') : '';
-    document.getElementById('product-categoria').value = isEdit ? (producto.categoria || 'general') : 'general';
-  }
-
-  setTimeout(() => document.getElementById('product-modal')?.classList.add('active'), 10);
-}
-
-function closeProductModal() {
-  document.getElementById('product-modal')?.classList.remove('active');
-}
-
-// Guardar producto
-async function saveProduct(e) {
-  e.preventDefault();
-  const id = document.getElementById('product-id').value;
-  const data = {
-    nombre: document.getElementById('product-nombre').value,
-    descripcion: document.getElementById('product-desc').value,
-    precio: parseFloat(document.getElementById('product-precio').value),
-    imagen: document.getElementById('product-imagen').value,
-    categoria: document.getElementById('product-categoria').value
-  };
-
-  let error;
-  if (id) {
-    ({ error } = await supabaseClient.from('productos').update(data).eq('id', id));
-  } else {
-    ({ error } = await supabaseClient.from('productos').insert(data));
-  }
-
-  if (error) {
-    showToast('Error: ' + error.message, 'error');
-  } else {
-    showToast(id ? 'Producto actualizado' : 'Producto creado', 'success');
-    closeProductModal();
-    loadAdminProductos();
-  }
-}
-
-// Editar producto
-function editProduct(producto) {
-  showProductModal(producto);
-}
-
-// Eliminar producto
-async function deleteProduct(id) {
-  if (!confirm('¿Eliminar este producto?')) return;
-  const { error } = await supabaseClient.from('productos').delete().eq('id', id);
-  if (error) {
-    showToast('Error: ' + error.message, 'error');
-  } else {
-    showToast('Producto eliminado', 'success');
-    loadAdminProductos();
-  }
-}
-
-// Cargar pedidos (admin)
-async function loadAdminPedidos() {
-  if (!requireAdmin()) return;
-  const container = document.getElementById('admin-pedidos');
-  if (!container) return;
-
-  const { data: pedidos } = await supabaseClient
-    .from('pedidos')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  let html = `
-    <h1>Pedidos</h1>
-    <div style="overflow-x:auto;">
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Usuario</th>
-          <th>Total</th>
-          <th>Estado</th>
-          <th>Fecha</th>
-          <th>Acción</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
-
-  if (!pedidos || pedidos.length === 0) {
-    html += '<tr><td colspan="6" style="text-align:center;color:#94a3b8;">No hay pedidos aún</td></tr>';
-  } else {
-    for (const pedido of pedidos) {
-      const { data: userData } = await supabaseClient
-        .from('perfiles')
-        .select('nombre')
-        .eq('id', pedido.usuario_id)
-        .single();
-
-      const nombre = userData?.nombre || 'Usuario';
+    let html = '<div class="table-container"><table><thead><tr><th>Nombre</th><th>Email</th><th>Mensaje</th><th>Fecha</th></tr></thead><tbody>';
+    data.forEach(msg => {
+      const fecha = new Date(msg.created_at).toLocaleDateString('es-ES');
       html += `
         <tr>
-          <td style="font-size:0.8rem;color:#94a3b8;">${pedido.id.slice(0, 8)}...</td>
-          <td>${nombre}</td>
-          <td><strong>S/ ${parseFloat(pedido.total).toFixed(2)}</strong></td>
+          <td>${msg.nombre}</td>
+          <td>${msg.email}</td>
+          <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${msg.mensaje}</td>
+          <td>${fecha}</td>
+        </tr>
+      `;
+    });
+    html += '</tbody></table></div>';
+    container.innerHTML = html;
+  } catch (error) {
+    console.error('Error cargando mensajes:', error.message);
+    container.innerHTML = '<div class="alert alert-error">Error al cargar mensajes.</div>';
+  }
+}
+
+// ============================================================
+// CRUD DE PRODUCTOS
+// ============================================================
+
+/**
+ * Inicializa la página de gestión de productos
+ */
+async function initProductosAdmin() {
+  await cargarCategoriasSelect();
+  await renderProductosTable();
+  setupProductosModal();
+}
+
+/**
+ * Carga categorías en el select del modal
+ */
+async function cargarCategoriasSelect() {
+  const select = document.getElementById('prod-categoria');
+  if (!select) return;
+
+  try {
+    const { data, error } = await supabase
+      .from('categorias')
+      .select('nombre')
+      .order('nombre');
+
+    if (error) throw error;
+
+    // Limpiar opciones existentes (mantener la primera)
+    while (select.options.length > 1) {
+      select.remove(1);
+    }
+
+    if (data) {
+      data.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat.nombre;
+        option.textContent = cat.nombre;
+        select.appendChild(option);
+      });
+    }
+  } catch (error) {
+    console.error('Error cargando categorías:', error.message);
+  }
+}
+
+/**
+ * Renderiza la tabla de productos en el admin
+ */
+async function renderProductosTable(search = '') {
+  const container = document.getElementById('admin-productos-container');
+  if (!container) return;
+
+  container.innerHTML = '<div class="spinner" role="status"><span class="sr-only">Cargando productos...</span></div>';
+
+  try {
+    let query = supabase.from('productos').select('*');
+
+    if (search.trim()) {
+      query = query.ilike('nombre', `%${search.trim()}%`);
+    }
+
+    const { data: productos, error } = await query.order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    if (!productos || productos.length === 0) {
+      container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: var(--spacing-xl);">No hay productos registrados.</p>';
+      return;
+    }
+
+    let html = '<div class="table-container"><table><thead><tr><th>Imagen</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Categoría</th><th>Acciones</th></tr></thead><tbody>';
+
+    productos.forEach(p => {
+      html += `
+        <tr>
           <td>
-            <span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:600;
-              ${pedido.estado === 'pendiente' ? 'background:#fef3c7;color:#92400e;' : ''}
-              ${pedido.estado === 'pagado' ? 'background:#dbeafe;color:#1e40af;' : ''}
-              ${pedido.estado === 'enviado' ? 'background:#f3e8ff;color:#6b21a8;' : ''}
-              ${pedido.estado === 'entregado' ? 'background:#d1fae5;color:#065f46;' : ''}
-              ${pedido.estado === 'cancelado' ? 'background:#fee2e2;color:#991b1b;' : ''}
-            ">${pedido.estado}</span>
+            <img src="${p.imagen_url || 'https://via.placeholder.com/50'}" 
+                 alt="${p.nombre}" 
+                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
           </td>
-          <td>${new Date(pedido.created_at).toLocaleDateString()}</td>
+          <td>${p.nombre}</td>
+          <td>$${parseFloat(p.precio).toFixed(2)}</td>
+          <td>${p.stock}</td>
+          <td>${p.categoria}</td>
           <td>
-            <select onchange="updateOrderStatus('${pedido.id}', this.value)" style="padding:6px 10px;border:2px solid #e2e8f0;border-radius:6px;font-size:0.85rem;">
-              <option value="pendiente" ${pedido.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
-              <option value="pagado" ${pedido.estado === 'pagado' ? 'selected' : ''}>Pagado</option>
-              <option value="enviado" ${pedido.estado === 'enviado' ? 'selected' : ''}>Enviado</option>
-              <option value="entregado" ${pedido.estado === 'entregado' ? 'selected' : ''}>Entregado</option>
-              <option value="cancelado" ${pedido.estado === 'cancelado' ? 'selected' : ''}>Cancelado</option>
-            </select>
+            <div style="display: flex; gap: var(--spacing-xs);">
+              <button class="btn btn-sm btn-secondary" onclick="editarProducto(${p.id})" aria-label="Editar ${p.nombre}">✏️</button>
+              <button class="btn btn-sm btn-danger" onclick="eliminarProducto(${p.id})" aria-label="Eliminar ${p.nombre}">🗑️</button>
+            </div>
           </td>
         </tr>
       `;
-    }
-  }
+    });
 
-  html += '</tbody></table></div>';
-  container.innerHTML = html;
+    html += '</tbody></table></div>';
+    container.innerHTML = html;
+  } catch (error) {
+    console.error('Error:', error.message);
+    container.innerHTML = '<div class="alert alert-error">Error al cargar productos.</div>';
+  }
 }
 
-// Actualizar estado de pedido
-async function updateOrderStatus(pedidoId, estado) {
-  const { error } = await supabaseClient
-    .from('pedidos')
-    .update({ estado })
-    .eq('id', pedidoId);
+/**
+ * Configura el modal de productos (nuevo/editar)
+ */
+function setupProductosModal() {
+  const modal = document.getElementById('producto-modal');
+  const btnNuevo = document.getElementById('btn-nuevo-producto');
+  const btnClose = document.getElementById('modal-close');
+  const btnCancel = document.getElementById('modal-cancel');
+  const form = document.getElementById('producto-form');
+  const searchInput = document.getElementById('admin-search');
 
-  if (error) {
-    showToast('Error: ' + error.message, 'error');
-  } else {
-    showToast('Pedido actualizado', 'success');
+  // Abrir modal para nuevo producto
+  if (btnNuevo) {
+    btnNuevo.addEventListener('click', () => {
+      resetFormProducto();
+      document.getElementById('modal-title').textContent = 'Nuevo Producto';
+      modal.classList.add('open');
+    });
   }
+
+  // Cerrar modal
+  const closeModal = () => modal.classList.remove('open');
+  if (btnClose) btnClose.addEventListener('click', closeModal);
+  if (btnCancel) btnCancel.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // Búsqueda en tabla
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      renderProductosTable(searchInput.value);
+    });
+  }
+
+  // Guardar producto
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errorDiv = document.getElementById('producto-form-error');
+      errorDiv.style.display = 'none';
+
+      const producto = {
+        nombre: document.getElementById('prod-nombre').value.trim(),
+        descripcion: document.getElementById('prod-descripcion').value.trim(),
+        precio: parseFloat(document.getElementById('prod-precio').value),
+        stock: parseInt(document.getElementById('prod-stock').value),
+        categoria: document.getElementById('prod-categoria').value,
+        imagen_url: document.getElementById('prod-imagen').value.trim()
+      };
+
+      // Validaciones
+      if (!producto.nombre || !producto.precio || isNaN(producto.stock) || !producto.categoria) {
+        errorDiv.textContent = 'Todos los campos marcados con * son obligatorios.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      const productoId = document.getElementById('producto-id').value;
+
+      try {
+        if (productoId) {
+          // Actualizar producto existente
+          const { error } = await supabase
+            .from('productos')
+            .update(producto)
+            .eq('id', productoId);
+
+          if (error) throw error;
+        } else {
+          // Crear nuevo producto
+          const { error } = await supabase
+            .from('productos')
+            .insert(producto);
+
+          if (error) throw error;
+        }
+
+        closeModal();
+        await renderProductosTable(searchInput?.value || '');
+      } catch (error) {
+        errorDiv.textContent = 'Error al guardar: ' + error.message;
+        errorDiv.style.display = 'block';
+      }
+    });
+  }
+}
+
+/**
+ * Editar producto: carga datos en el modal
+ */
+async function editarProducto(id) {
+  try {
+    const { data, error } = await supabase
+      .from('productos')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+
+    if (!data) return;
+
+    document.getElementById('producto-id').value = data.id;
+    document.getElementById('prod-nombre').value = data.nombre;
+    document.getElementById('prod-descripcion').value = data.descripcion || '';
+    document.getElementById('prod-precio').value = data.precio;
+    document.getElementById('prod-stock').value = data.stock;
+    document.getElementById('prod-categoria').value = data.categoria;
+    document.getElementById('prod-imagen').value = data.imagen_url || '';
+
+    document.getElementById('modal-title').textContent = 'Editar Producto';
+    document.getElementById('producto-modal').classList.add('open');
+  } catch (error) {
+    console.error('Error cargando producto:', error.message);
+  }
+}
+
+/**
+ * Elimina un producto con confirmación
+ */
+async function eliminarProducto(id) {
+  if (!confirm('¿Estás seguro de eliminar este producto?')) return;
+
+  try {
+    const { error } = await supabase
+      .from('productos')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+
+    const searchInput = document.getElementById('admin-search');
+    await renderProductosTable(searchInput?.value || '');
+  } catch (error) {
+    alert('Error al eliminar: ' + error.message);
+  }
+}
+
+/**
+ * Resetea el formulario de producto
+ */
+function resetFormProducto() {
+  document.getElementById('producto-id').value = '';
+  document.getElementById('prod-nombre').value = '';
+  document.getElementById('prod-descripcion').value = '';
+  document.getElementById('prod-precio').value = '';
+  document.getElementById('prod-stock').value = '';
+  document.getElementById('prod-categoria').value = '';
+  document.getElementById('prod-imagen').value = '';
+  document.getElementById('producto-form-error').style.display = 'none';
+}
+
+// ============================================================
+// ADMINISTRACIÓN DE USUARIOS (solo superadmin)
+// ============================================================
+
+/**
+ * Carga y renderiza la lista de usuarios
+ */
+async function cargarUsuarios() {
+  const container = document.getElementById('admin-usuarios-container');
+  if (!container) return;
+
+  container.innerHTML = '<div class="spinner" role="status"><span class="sr-only">Cargando usuarios...</span></div>';
+
+  try {
+    const { data: perfiles, error } = await supabase
+      .from('perfiles')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    if (!perfiles || perfiles.length === 0) {
+      container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">No hay usuarios registrados.</p>';
+      return;
+    }
+
+    let html = '<div class="table-container"><table><thead><tr><th>ID</th><th>Nombre</th><th>Rol</th><th>Acciones</th></tr></thead><tbody>';
+
+    perfiles.forEach(perfil => {
+      html += `
+        <tr>
+          <td style="font-size: var(--font-size-sm);">${perfil.id.substring(0, 8)}...</td>
+          <td>${perfil.nombre || 'Sin nombre'}</td>
+          <td>
+            <span style="font-weight: 600; color: ${perfil.rol === 'superadmin' ? 'var(--color-warning)' : perfil.rol === 'admin' ? 'var(--color-primary)' : 'var(--text-secondary)'};">
+              ${perfil.rol}
+            </span>
+          </td>
+          <td>
+            ${perfil.rol !== 'superadmin' ? `
+              <button class="btn btn-sm btn-primary" onclick="cambiarRol('${perfil.id}', 'admin')" aria-label="Hacer administrador">
+                Hacer Admin
+              </button>
+              <button class="btn btn-sm btn-secondary" onclick="cambiarRol('${perfil.id}', 'cliente')" aria-label="Hacer cliente">
+                Hacer Cliente
+              </button>
+            ` : '<span style="color: var(--text-muted);">Superadmin</span>'}
+          </td>
+        </tr>
+      `;
+    });
+
+    html += '</tbody></table></div>';
+    container.innerHTML = html;
+  } catch (error) {
+    console.error('Error cargando usuarios:', error.message);
+    container.innerHTML = '<div class="alert alert-error">Error al cargar usuarios.</div>';
+  }
+}
+
+/**
+ * Cambia el rol de un usuario
+ */
+async function cambiarRol(userId, nuevoRol) {
+  if (!confirm(`¿Cambiar el rol del usuario a "${nuevoRol}"?`)) return;
+
+  try {
+    const { error } = await supabase
+      .from('perfiles')
+      .update({ rol: nuevoRol })
+      .eq('id', userId);
+
+    if (error) throw error;
+
+    await cargarUsuarios();
+  } catch (error) {
+    alert('Error al cambiar rol: ' + error.message);
+  }
+}
+
+// ============================================================
+// ADMINISTRACIÓN DE EVENTOS
+// ============================================================
+
+/**
+ * Inicializa la página de gestión de eventos
+ */
+async function initEventosAdmin() {
+  await renderEventosTable();
+  setupEventosModal();
+}
+
+/**
+ * Renderiza tabla de eventos en el admin
+ */
+async function renderEventosTable() {
+  const container = document.getElementById('admin-eventos-container');
+  if (!container) return;
+
+  container.innerHTML = '<div class="spinner" role="status"><span class="sr-only">Cargando eventos...</span></div>';
+
+  try {
+    const { data: eventos, error } = await supabase
+      .from('eventos')
+      .select('*')
+      .order('fecha', { ascending: true });
+
+    if (error) throw error;
+
+    if (!eventos || eventos.length === 0) {
+      container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: var(--spacing-xl);">No hay eventos registrados.</p>';
+      return;
+    }
+
+    let html = '<div class="table-container"><table><thead><tr><th>Título</th><th>Fecha</th><th>Lugar</th><th>Acciones</th></tr></thead><tbody>';
+
+    eventos.forEach(e => {
+      const fecha = new Date(e.fecha).toLocaleDateString('es-ES');
+      html += `
+        <tr>
+          <td>${e.titulo}</td>
+          <td>${fecha} ${e.hora ? `- ${e.hora}` : ''}</td>
+          <td>${e.lugar || '-'}</td>
+          <td>
+            <div style="display: flex; gap: var(--spacing-xs);">
+              <button class="btn btn-sm btn-secondary" onclick="editarEvento(${e.id})" aria-label="Editar ${e.titulo}">✏️</button>
+              <button class="btn btn-sm btn-danger" onclick="eliminarEvento(${e.id})" aria-label="Eliminar ${e.titulo}">🗑️</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    });
+
+    html += '</tbody></table></div>';
+    container.innerHTML = html;
+  } catch (error) {
+    container.innerHTML = '<div class="alert alert-error">Error al cargar eventos.</div>';
+  }
+}
+
+/**
+ * Configura el modal de eventos
+ */
+function setupEventosModal() {
+  const modal = document.getElementById('evento-modal');
+  const btnNuevo = document.getElementById('btn-nuevo-evento');
+  const btnClose = document.getElementById('evento-modal-close');
+  const btnCancel = document.getElementById('evento-modal-cancel');
+  const form = document.getElementById('evento-form');
+
+  if (btnNuevo) {
+    btnNuevo.addEventListener('click', () => {
+      resetFormEvento();
+      document.getElementById('evento-modal-title').textContent = 'Nuevo Evento';
+      modal.classList.add('open');
+    });
+  }
+
+  const closeModal = () => modal.classList.remove('open');
+  if (btnClose) btnClose.addEventListener('click', closeModal);
+  if (btnCancel) btnCancel.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errorDiv = document.getElementById('evento-form-error');
+      errorDiv.style.display = 'none';
+
+      const evento = {
+        titulo: document.getElementById('ev-titulo').value.trim(),
+        descripcion: document.getElementById('ev-descripcion').value.trim(),
+        fecha: document.getElementById('ev-fecha').value,
+        hora: document.getElementById('ev-hora').value || null,
+        lugar: document.getElementById('ev-lugar').value.trim(),
+        imagen_url: document.getElementById('ev-imagen').value.trim()
+      };
+
+      if (!evento.titulo || !evento.fecha) {
+        errorDiv.textContent = 'Título y fecha son obligatorios.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      const eventoId = document.getElementById('evento-id').value;
+
+      try {
+        if (eventoId) {
+          const { error } = await supabase.from('eventos').update(evento).eq('id', eventoId);
+          if (error) throw error;
+        } else {
+          const { error } = await supabase.from('eventos').insert(evento);
+          if (error) throw error;
+        }
+        closeModal();
+        await renderEventosTable();
+      } catch (error) {
+        errorDiv.textContent = 'Error: ' + error.message;
+        errorDiv.style.display = 'block';
+      }
+    });
+  }
+}
+
+async function editarEvento(id) {
+  try {
+    const { data, error } = await supabase.from('eventos').select('*').eq('id', id).single();
+    if (error || !data) return;
+
+    document.getElementById('evento-id').value = data.id;
+    document.getElementById('ev-titulo').value = data.titulo;
+    document.getElementById('ev-descripcion').value = data.descripcion || '';
+    document.getElementById('ev-fecha').value = data.fecha;
+    document.getElementById('ev-hora').value = data.hora || '';
+    document.getElementById('ev-lugar').value = data.lugar || '';
+    document.getElementById('ev-imagen').value = data.imagen_url || '';
+
+    document.getElementById('evento-modal-title').textContent = 'Editar Evento';
+    document.getElementById('evento-modal').classList.add('open');
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+}
+
+async function eliminarEvento(id) {
+  if (!confirm('¿Eliminar este evento?')) return;
+  try {
+    await supabase.from('eventos').delete().eq('id', id);
+    await renderEventosTable();
+  } catch (error) {
+    alert('Error: ' + error.message);
+  }
+}
+
+function resetFormEvento() {
+  document.getElementById('evento-id').value = '';
+  document.getElementById('ev-titulo').value = '';
+  document.getElementById('ev-descripcion').value = '';
+  document.getElementById('ev-fecha').value = '';
+  document.getElementById('ev-hora').value = '';
+  document.getElementById('ev-lugar').value = '';
+  document.getElementById('ev-imagen').value = '';
+  document.getElementById('evento-form-error').style.display = 'none';
 }

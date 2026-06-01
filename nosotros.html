@@ -1,95 +1,199 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nosotros - ShopExpress</title>
+  <meta name="description" content="Conoce más sobre MiTiendaOnline, nuestra historia, misión y visión.">
+  <title>Nosotros | MiTiendaOnline</title>
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-client.js"></script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛍️</text></svg>">
+  <style>
+    .about-hero {
+      background: var(--bg-hero);
+      color: #fff;
+      padding: var(--spacing-2xl) var(--spacing-md);
+      text-align: center;
+    }
+    .about-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--spacing-lg);
+      margin-top: var(--spacing-xl);
+    }
+    .value-card {
+      background: var(--bg-card);
+      padding: var(--spacing-xl);
+      border-radius: var(--border-radius-lg);
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+    .value-card__icon {
+      font-size: 3rem;
+      margin-bottom: var(--spacing-md);
+    }
+  </style>
 </head>
 <body>
-  <div id="toast-container" class="toast-container"></div>
-  <header class="header"></header>
+  <a href="#main-content" class="skip-link" aria-label="Saltar al contenido principal">Saltar al contenido principal</a>
 
-  <section class="section">
-    <div class="nosotros-grid">
-      <div>
-        <h2 class="section-title" style="text-align:left;">Nuestra historia</h2>
-        <p class="section-subtitle" style="text-align:left;margin-left:0;">Conoce más sobre ShopExpress</p>
-        <p style="color:#475569;line-height:1.8;margin-bottom:16px;">
-          ShopExpress nació en 2022 con una misión clara: hacer que las compras online sean 
-          rápidas, seguras y accesibles para todos. Lo que comenzó como un pequeño proyecto 
-          entre amigos, hoy es una de las tiendas online más confiables del país.
-        </p>
-        <p style="color:#475569;line-height:1.8;margin-bottom:16px;">
-          Nos apasiona ofrecer productos de alta calidad a precios justos. Trabajamos 
-          directamente con fabricantes y distribuidores para garantizar los mejores precios 
-          sin sacrificar la calidad.
-        </p>
-        <p style="color:#475569;line-height:1.8;">
-          Hoy contamos con más de 10,000 clientes satisfechos y un equipo de 50 personas 
-          dedicadas a brindarte la mejor experiencia de compra.
+  <!-- HEADER -->
+  <header class="header" role="banner">
+    <div class="header__container">
+      <a href="index.html" class="header__logo" aria-label="Ir al inicio">🛍️ MiTienda</a>
+      <button class="header__menu-btn" id="menu-btn" aria-label="Abrir menú de navegación" aria-expanded="false">☰</button>
+      <nav class="header__nav" id="main-nav" role="navigation" aria-label="Navegación principal">
+        <a href="index.html">Inicio</a>
+        <a href="nosotros.html" class="active" aria-current="page">Nosotros</a>
+        <a href="catalogo.html">Catálogo</a>
+        <a href="contacto.html">Contacto</a>
+        <a href="login.html" id="login-link">Iniciar Sesión</a>
+        <a href="registro.html" id="register-link">Registrarse</a>
+        <a href="admin/index.html" id="admin-link" style="display:none;">Admin</a>
+        <a href="carrito.html" class="cart-badge" aria-label="Carrito de compras">🛒 <span class="cart-badge__count" role="status" aria-live="polite">0</span></a>
+        <a href="#" id="logout-btn" style="display:none;" aria-label="Cerrar sesión">Cerrar Sesión</a>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar modo oscuro/claro">🌙</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main id="main-content" class="main-content" role="main">
+    <section class="about-hero">
+      <div class="about-content">
+        <h1>Sobre Nosotros</h1>
+        <p style="color: #94a3b8; font-size: var(--font-size-lg); margin-top: var(--spacing-md);">
+          Conoce nuestra historia y por qué somos tu mejor opción.
         </p>
       </div>
+    </section>
+
+    <section class="section">
+      <div class="container about-content">
+        <h2>Nuestra Historia</h2>
+        <p>
+          MiTiendaOnline nació en 2024 con la visión de crear una experiencia de compra 
+          online sencilla, segura y accesible para todos. Desde entonces, hemos crecido 
+          hasta convertirnos en una de las tiendas virtuales más confiables de la región.
+        </p>
+        <p>
+          Nos apasiona ofrecer productos de calidad a precios justos, respaldados por un 
+          servicio al cliente excepcional. Trabajamos directamente con fabricantes y 
+          distribuidores para garantizar los mejores precios para ti.
+        </p>
+
+        <h2 class="mt-2">Nuestra Misión</h2>
+        <p>
+          Democratizar el acceso a productos de calidad a través de una plataforma 
+          online segura, fácil de usar y con los mejores precios del mercado.
+        </p>
+
+        <h2 class="mt-2">Nuestra Visión</h2>
+        <p>
+          Ser la tienda online líder en Latinoamérica, reconocida por nuestra calidad, 
+          confiabilidad y excelente servicio al cliente.
+        </p>
+      </div>
+    </section>
+
+    <!-- VALORES -->
+    <section class="section" style="background: var(--bg-card);">
+      <div class="container about-content">
+        <h2 class="text-center">Nuestros Valores</h2>
+        <div class="values-grid">
+          <div class="value-card">
+            <div class="value-card__icon">🔒</div>
+            <h3>Confianza</h3>
+            <p style="color: var(--text-secondary); font-size: var(--font-size-sm);">Tus datos y pagos están siempre protegidos.</p>
+          </div>
+          <div class="value-card">
+            <div class="value-card__icon">⭐</div>
+            <h3>Calidad</h3>
+            <p style="color: var(--text-secondary); font-size: var(--font-size-sm);">Seleccionamos los mejores productos para ti.</p>
+          </div>
+          <div class="value-card">
+            <div class="value-card__icon">🚚</div>
+            <h3>Rapidez</h3>
+            <p style="color: var(--text-secondary); font-size: var(--font-size-sm);">Entregas rápidas y seguimiento en tiempo real.</p>
+          </div>
+          <div class="value-card">
+            <div class="value-card__icon">💚</div>
+            <h3>Sostenibilidad</h3>
+            <p style="color: var(--text-secondary); font-size: var(--font-size-sm);">Comprometidos con el medio ambiente.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer__container">
       <div>
-        <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600" alt="Nuestro equipo" class="nosotros-image" onerror="this.src='https://via.placeholder.com/600x400?text=Nosotros'">
+        <h3 class="footer__title">MiTiendaOnline</h3>
+        <p>Tu tienda de confianza con los mejores productos y precios.</p>
+      </div>
+      <div>
+        <h3 class="footer__title">Enlaces Rápidos</h3>
+        <nav class="footer__links" aria-label="Enlaces del pie de página">
+          <a href="nosotros.html">Sobre Nosotros</a>
+          <a href="catalogo.html">Catálogo</a>
+          <a href="contacto.html">Contacto</a>
+        </nav>
+      </div>
+      <div>
+        <h3 class="footer__title">Contacto</h3>
+        <p>📧 info@mitienda.com</p>
+        <p>📞 (123) 456-7890</p>
+        <p>📍 Av. Principal 123, Lima</p>
       </div>
     </div>
-
-    <div class="valores-grid">
-      <div class="valor-card">
-        <div class="valor-icon">🎯</div>
-        <h4>Misión</h4>
-        <p>Ofrecer productos de calidad con la mejor experiencia de compra online.</p>
-      </div>
-      <div class="valor-card">
-        <div class="valor-icon">🔭</div>
-        <h4>Visión</h4>
-        <p>Ser la tienda online líder en Latinoamérica para 2028.</p>
-      </div>
-      <div class="valor-card">
-        <div class="valor-icon">💎</div>
-        <h4>Calidad</h4>
-        <p>Solo trabajamos con productos que cumplen los más altos estándares.</p>
-      </div>
-      <div class="valor-card">
-        <div class="valor-icon">❤️</div>
-        <h4>Compromiso</h4>
-        <p>La satisfacción de nuestros clientes es nuestra prioridad número uno.</p>
-      </div>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="footer-grid">
-      <div>
-        <h4>ShopExpress</h4>
-        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">Tu tienda online de confianza.</p>
-      </div>
-      <div>
-        <h4>Enlaces</h4>
-        <a href="/">Inicio</a>
-        <a href="/catalogo.html">Tienda</a>
-        <a href="/contacto.html">Contacto</a>
-      </div>
-      <div>
-        <h4>Contacto</h4>
-        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">📞 +51 999 888 777</p>
-        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">✉️ hola@shopexpress.com</p>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 ShopExpress. Todos los derechos reservados.</p>
+    <div class="footer__bottom">
+      <p>&copy; 2026 MiTiendaOnline. Todos los derechos reservados.</p>
     </div>
   </footer>
 
-  <script src="js/cart.js"></script>
+  <!-- CHATBOT -->
+  <div class="chatbot">
+    <button class="chatbot__btn" id="chatbot-btn" aria-label="Abrir chat de ayuda" aria-expanded="false">💬</button>
+    <div class="chatbot__window" id="chatbot-window" role="dialog" aria-label="Ventana de chat">
+      <div class="chatbot__header">Asistente Virtual</div>
+      <div class="chatbot__messages" id="chatbot-messages" role="list"></div>
+      <div class="chatbot__messages" id="chatbot-typing" style="display:none; padding: 0 var(--spacing-md);"><small style="color: var(--text-muted);">Escribiendo...</small></div>
+      <div class="chatbot__input-area">
+        <input type="text" class="chatbot__input" id="chatbot-input" placeholder="Escribe tu mensaje..." aria-label="Escribe tu mensaje">
+        <button class="chatbot__send" id="chatbot-send" aria-label="Enviar mensaje">Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
   <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/chatbot.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      loadHeader();
-      initAuth();
+      // Dark mode toggle
+      const toggle = document.getElementById('theme-toggle');
+      const html = document.documentElement;
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      html.setAttribute('data-theme', savedTheme);
+      toggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+      toggle.addEventListener('click', () => {
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        toggle.textContent = next === 'dark' ? '☀️' : '🌙';
+      });
+      // Menú hamburguesa
+      document.getElementById('menu-btn').addEventListener('click', () => {
+        const nav = document.getElementById('main-nav');
+        nav.classList.toggle('open');
+      });
     });
   </script>
 </body>

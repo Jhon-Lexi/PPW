@@ -1,218 +1,272 @@
-// ============================================
-// AUTENTICACIÓN - Supabase Auth
-// ============================================
+// ============================================================
+// MÓDULO DE AUTENTICACIÓN
+// ============================================================
 
-let currentUser = null;
+/**
+ * Registro de nuevo usuario
+ * @param {string} email - Correo electrónico
+ * @param {string} password - Contraseña
+ * @param {string} nombre - Nombre completo
+ */
+async function registrarUsuario(email, password, nombre) {
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { nombre } // Se guarda en raw_user_meta_data
+      }
+    });
 
-// Escuchar cambios de autenticación
-function listenAuth() {
-  if (!supabaseClient) return;
-  supabaseClient.auth.onAuthStateChange((event, session) => {
-    if (session) {
-      getUserProfile(session.user);
-    } else {
-      currentUser = null;
-      updateUI();
+    if (error) throw error;
+
+    // El trigger crear_perfil() crea automáticamente el perfil
+    // Pero si el usuario ya existe, actualizamos el nombre
+    const profileData = {
+      id: data.user.id,
+      nombre: nombre
+    };
+
+    const { error: profileError } = await supabase
+      .from('perfiles')
+      .upsert(profileData, { onConflict: 'id' });
+
+    if (profileError) throw profileError;
+
+    return { success: true, message: 'Registro exitoso. Revisa tu correo para confirmar.' };
+  } catch (error) {
+    console.error('Error de registro:', error.message);
+    return { success: false, message: error.message };
+  }
+}
+
+/**
+ * Inicio de sesión con email y contraseña
+ */
+async function iniciarSesion(email, password) {
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) throw error;
+    return { success: true, user: data.user };
+  } catch (error) {
+    console.error('Error de login:', error.message);
+    return { success: false, message: error.message };
+  }
+}
+
+/**
+ * Inicio de sesión con Google
+ */
+async function iniciarSesionGoogle() {
+  try {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin + '/index.html'
+      }
+    });
+
+    if (error) throw error;
+    return { success: true };
+  } catch (error) {
+    console.error('Error con Google login:', error.message);
+    return { success: false, message: error.message };
+  }
+}
+
+/**
+ * Cerrar sesión
+ */
+async function cerrarSesion() {
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    localStorage.removeItem('carrito');
+    window.location.href = '/login.html';
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error.message);
+  }
+}
+
+/**
+ * Escucha cambios en el estado de autenticación
+ * Actualiza la UI automáticamente
+ */
+function escucharAuth() {
+  supabase.auth.onAuthStateChange((event, session) => {
+    console.log('Estado de autenticación cambiado:', event);
+    actualizarUI(session?.user || null);
+  });
+}
+
+/**
+ * Actualiza la interfaz según el estado de autenticación
+ */
+function actualizarUI(user) {
+  const loginLink = document.getElementById('login-link');
+  const registerLink = document.getElementById('register-link');
+  const logoutBtn = document.getElementById('logout-btn');
+  const adminLink = document.getElementById('admin-link');
+  const userInfo = document.getElementById('user-info');
+
+  if (user) {
+    // Usuario logueado
+    if (loginLink) loginLink.style.display = 'none';
+    if (registerLink) registerLink.style.display = 'none';
+    if (logoutBtn) logoutBtn.style.display = 'inline-flex';
+    if (userInfo) userInfo.textContent = user.email;
+
+    // Verificar si es admin para mostrar enlace
+    if (adminLink) {
+      isAdmin().then(admin => {
+        adminLink.style.display = admin ? 'inline-flex' : 'none';
+      });
     }
-  });
-}
-
-// Obtener sesión actual
-async function getSession() {
-  if (!supabaseClient) return null;
-  const { data } = await supabaseClient.auth.getSession();
-  return data.session;
-}
-
-// Obtener perfil del usuario
-async function getUserProfile(user) {
-  if (!supabaseClient) return;
-  const { data, error } = await supabaseClient
-    .from('perfiles')
-    .select('*')
-    .eq('id', user.id)
-    .single();
-
-  if (!error && data) {
-    currentUser = { ...user, ...data };
   } else {
-    currentUser = user;
+    // Usuario no logueado
+    if (loginLink) loginLink.style.display = 'inline-flex';
+    if (registerLink) registerLink.style.display = 'inline-flex';
+    if (logoutBtn) logoutBtn.style.display = 'none';
+    if (adminLink) adminLink.style.display = 'none';
+    if (userInfo) userInfo.textContent = '';
   }
-  updateUI();
-  return currentUser;
 }
 
-// Inicializar auth al cargar la página
-async function initAuth() {
-  if (!supabaseClient) {
-    // Esperar a que supabase esté disponible
-    setTimeout(initAuth, 100);
-    return;
-  }
-
-  const session = await getSession();
-  if (session) {
-    await getUserProfile(session.user);
-  }
-  listenAuth();
-}
-
-// Registrar usuario
-async function registerUser(email, password, nombre) {
-  if (!supabaseClient) return { error: 'Supabase no configurado' };
-
-  const { data, error } = await supabaseClient.auth.signUp({
-    email,
-    password,
-    options: { data: { nombre } }
-  });
-
-  if (error) return { error: error.message };
-  return { data, success: true };
-}
-
-// Iniciar sesión
-async function loginUser(email, password) {
-  if (!supabaseClient) return { error: 'Supabase no configurado' };
-
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if (error) return { error: error.message };
-
-  await getUserProfile(data.user);
-  return { data, success: true };
-}
-
-// Cerrar sesión
-async function logoutUser() {
-  if (!supabaseClient) return;
-  await supabaseClient.auth.signOut();
-  currentUser = null;
-  updateUI();
-  window.location.href = '/';
-}
-
-// Verificar si es admin
-function isAdmin() {
-  return currentUser && currentUser.rol === 'admin';
-}
-
-// Verificar si está autenticado
-function isAuthenticated() {
-  return currentUser !== null;
-}
-
-// Redirigir si no es admin
-function requireAdmin() {
-  if (!isAuthenticated()) {
-    window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
-    return false;
-  }
-  if (!isAdmin()) {
-    window.location.href = '/';
-    return false;
-  }
-  return true;
-}
-
-// Redirigir si no está autenticado
-function requireAuth() {
-  if (!isAuthenticated()) {
+/**
+ * Protege una ruta: redirige a login si no hay sesión
+ */
+async function protegerRuta() {
+  const user = await getCurrentUser();
+  if (!user) {
     window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
     return false;
   }
   return true;
 }
 
-// Actualizar UI según estado de auth
-function updateUI() {
-  const authContainer = document.getElementById('auth-container');
-  if (!authContainer) return;
-
-  if (currentUser) {
-    const nombre = currentUser.nombre || currentUser.email?.split('@')[0] || 'Usuario';
-    const inicial = nombre.charAt(0).toUpperCase();
-    const isAdm = isAdmin();
-
-    authContainer.innerHTML = `
-      <div class="user-badge" onclick="toggleUserMenu(event)">
-        <div class="avatar">${inicial}</div>
-        <span>${nombre}</span>
-      </div>
-      <div id="user-menu" style="display:none;position:absolute;top:100%;right:0;background:white;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,0.15);min-width:200px;z-index:100;overflow:hidden;">
-        ${isAdm ? '<a href="/admin/dashboard.html" style="display:block;padding:12px 20px;font-size:0.9rem;color:#334155;transition:all 0.2s;">📊 Dashboard Admin</a>' : ''}
-        <a href="/carrito.html" style="display:block;padding:12px 20px;font-size:0.9rem;color:#334155;transition:all 0.2s;">🛒 Mis compras</a>
-        <div style="border-top:1px solid #e2e8f0;"></div>
-        <a href="#" onclick="logoutUser();return false;" style="display:block;padding:12px 20px;font-size:0.9rem;color:#ef4444;transition:all 0.2s;">🚪 Cerrar sesión</a>
-      </div>
-    `;
-    updateCartCount();
-  } else {
-    authContainer.innerHTML = `
-      <a href="/login.html" class="btn btn-outline btn-sm">Ingresar</a>
-      <a href="/registro.html" class="btn btn-primary btn-sm">Registrarse</a>
-    `;
+/**
+ * Protege una ruta de admin
+ */
+async function protegerRutaAdmin() {
+  const user = await getCurrentUser();
+  if (!user) {
+    window.location.href = '/login.html';
+    return false;
   }
-}
-
-// Mostrar menú de usuario
-function toggleUserMenu(e) {
-  e.stopPropagation();
-  const menu = document.getElementById('user-menu');
-  if (menu) {
-    const isVisible = menu.style.display === 'block';
-    menu.style.display = isVisible ? 'none' : 'block';
+  const admin = await isAdmin();
+  if (!admin) {
+    window.location.href = '/index.html';
+    return false;
   }
+  return true;
 }
 
-// Cerrar menú al hacer clic fuera
-document.addEventListener('click', () => {
-  const menu = document.getElementById('user-menu');
-  if (menu) menu.style.display = 'none';
-});
+// ============================================================
+// MANEJO DE FORMULARIOS DE AUTH
+// ============================================================
 
-// ============ COMPONENTE HEADER COMPARTIDO ============
-// Inyectar el header en todas las páginas que tengan <header>
-
-function loadHeader() {
-  const header = document.querySelector('.header');
-  if (!header) return;
-
-  const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-
-  header.innerHTML = `
-    <nav class="navbar">
-      <a href="/" class="navbar-brand">
-        <div class="navbar-logo">🛍️</div>
-        <span>Shop</span>Express
-      </a>
-      <button class="hamburger" onclick="toggleMenu()" aria-label="Menú">
-        <span></span><span></span><span></span>
-      </button>
-      <div class="nav-links" id="navLinks">
-        <a href="/" class="${currentPath === 'index.html' || currentPath === '' ? 'active' : ''}">Inicio</a>
-        <a href="/catalogo.html" class="${currentPath === 'catalogo.html' ? 'active' : ''}">Tienda</a>
-        <a href="/nosotros.html" class="${currentPath === 'nosotros.html' ? 'active' : ''}">Nosotros</a>
-        <a href="/contacto.html" class="${currentPath === 'contacto.html' ? 'active' : ''}">Contacto</a>
-        <a href="/carrito.html" class="btn-cart">
-          🛒 <span id="cart-count-header" class="cart-count">0</span>
-        </a>
-        <div class="nav-auth" id="auth-container"></div>
-      </div>
-    </nav>
-  `;
-}
-
-function toggleMenu() {
-  document.getElementById('navLinks')?.classList.toggle('open');
-}
-
-// Inicializar
+// Login form
 document.addEventListener('DOMContentLoaded', () => {
-  loadHeader();
-  initAuth();
-  updateCartCount();
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const errorDiv = document.getElementById('login-error');
+
+      if (!email || !password) {
+        errorDiv.textContent = 'Todos los campos son obligatorios';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      const result = await iniciarSesion(email, password);
+      if (result.success) {
+        // Redirigir a la página anterior o al home
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect') || '/index.html';
+        window.location.href = redirect;
+      } else {
+        errorDiv.textContent = result.message;
+        errorDiv.style.display = 'block';
+      }
+    });
+  }
+
+  // Register form
+  const registerForm = document.getElementById('register-form');
+  if (registerForm) {
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nombre = document.getElementById('register-nombre').value;
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+      const confirmPassword = document.getElementById('register-confirm').value;
+      const errorDiv = document.getElementById('register-error');
+
+      if (!nombre || !email || !password || !confirmPassword) {
+        errorDiv.textContent = 'Todos los campos son obligatorios';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        errorDiv.textContent = 'Las contraseñas no coinciden';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      if (password.length < 6) {
+        errorDiv.textContent = 'La contraseña debe tener al menos 6 caracteres';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      const result = await registrarUsuario(email, password, nombre);
+      if (result.success) {
+        const successDiv = document.getElementById('register-success');
+        successDiv.textContent = result.message;
+        successDiv.style.display = 'block';
+        registerForm.reset();
+      } else {
+        errorDiv.textContent = result.message;
+        errorDiv.style.display = 'block';
+      }
+    });
+  }
+
+  // Google login button
+  const googleBtn = document.getElementById('google-login-btn');
+  if (googleBtn) {
+    googleBtn.addEventListener('click', async () => {
+      const result = await iniciarSesionGoogle();
+      if (!result.success) {
+        const errorDiv = document.getElementById('login-error');
+        errorDiv.textContent = result.message;
+        errorDiv.style.display = 'block';
+      }
+    });
+  }
+
+  // Logout button
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      cerrarSesion();
+    });
+  }
+
+  // Inicializar UI de autenticación
+  escucharAuth();
+
+  // Verificar sesión actual al cargar
+  getSession().then(session => {
+    actualizarUI(session?.user || null);
+  });
 });

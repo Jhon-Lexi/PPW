@@ -1,161 +1,230 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contacto - ShopExpress</title>
+  <meta name="description" content="Contáctanos. Envíanos un mensaje o encuéntranos en nuestro mapa.">
+  <title>Contacto | MiTiendaOnline</title>
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-client.js"></script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛍️</text></svg>">
+  <style>
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-xl);
+    }
+    @media (max-width: 767px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .map-container {
+      border-radius: var(--border-radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+    .map-container iframe {
+      width: 100%;
+      height: 450px;
+      border: 0;
+    }
+  </style>
 </head>
 <body>
-  <div id="toast-container" class="toast-container"></div>
-  <header class="header"></header>
+  <a href="#main-content" class="skip-link" aria-label="Saltar al contenido principal">Saltar al contenido principal</a>
 
-  <section class="section">
-    <h2 class="section-title">Contáctanos</h2>
-    <p class="section-subtitle">Estamos aquí para ayudarte. Escríbenos y te responderemos a la brevedad.</p>
+  <!-- HEADER -->
+  <header class="header" role="banner">
+    <div class="header__container">
+      <a href="index.html" class="header__logo" aria-label="Ir al inicio">🛍️ MiTienda</a>
+      <button class="header__menu-btn" id="menu-btn" aria-label="Abrir menú de navegación" aria-expanded="false">☰</button>
+      <nav class="header__nav" id="main-nav" role="navigation" aria-label="Navegación principal">
+        <a href="index.html">Inicio</a>
+        <a href="nosotros.html">Nosotros</a>
+        <a href="catalogo.html">Catálogo</a>
+        <a href="contacto.html" class="active" aria-current="page">Contacto</a>
+        <a href="login.html" id="login-link">Iniciar Sesión</a>
+        <a href="registro.html" id="register-link">Registrarse</a>
+        <a href="admin/index.html" id="admin-link" style="display:none;">Admin</a>
+        <a href="carrito.html" class="cart-badge" aria-label="Carrito de compras">🛒 <span class="cart-badge__count" role="status" aria-live="polite">0</span></a>
+        <a href="#" id="logout-btn" style="display:none;" aria-label="Cerrar sesión">Cerrar Sesión</a>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar modo oscuro/claro">🌙</button>
+      </nav>
+    </div>
+  </header>
 
-    <div class="contacto-grid">
-      <div>
-        <form id="contact-form" onsubmit="handleContact(event)">
-          <div class="form-group">
-            <label for="contact-nombre">Nombre</label>
-            <input type="text" id="contact-nombre" placeholder="Tu nombre" required>
-          </div>
-          <div class="form-group">
-            <label for="contact-email">Correo electrónico</label>
-            <input type="email" id="contact-email" placeholder="tu@correo.com" required>
-          </div>
-          <div class="form-group">
-            <label for="contact-asunto">Asunto</label>
-            <input type="text" id="contact-asunto" placeholder="¿En qué podemos ayudarte?" required>
-          </div>
-          <div class="form-group">
-            <label for="contact-mensaje">Mensaje</label>
-            <textarea id="contact-mensaje" placeholder="Escribe tu mensaje aquí..." required></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary btn-lg w-full" id="contact-submit">Enviar mensaje</button>
-        </form>
-        <div id="contact-alert" style="margin-top:16px;"></div>
+  <!-- MAIN -->
+  <main id="main-content" class="main-content" role="main">
+    <section class="hero" style="min-height: 30vh; padding: var(--spacing-xl) var(--spacing-md);">
+      <div class="hero__content">
+        <h1 class="hero__title">Contáctanos</h1>
+        <p class="hero__subtitle">Estamos aquí para ayudarte. Escríbenos o visítanos.</p>
       </div>
-      <div class="contacto-info">
-        <div style="background:white;padding:32px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-          <h3>Información de contacto</h3>
-          <div style="margin-top:24px;">
-            <p><span class="contacto-icon">📍</span> Av. Principal 123, Miraflores, Lima</p>
-            <p><span class="contacto-icon">📞</span> +51 999 888 777</p>
-            <p><span class="contacto-icon">✉️</span> hola@shopexpress.com</p>
-            <p><span class="contacto-icon">🕐</span> Lun - Sáb: 9:00 AM - 8:00 PM</p>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="contact-grid">
+          <!-- Formulario de contacto -->
+          <div>
+            <h2>Envíanos un Mensaje</h2>
+            <form class="form" id="contact-form" style="max-width: 100%;" novalidate>
+              <div id="contact-error" class="alert alert-error" style="display:none;" role="alert"></div>
+              <div id="contact-success" class="alert alert-success" style="display:none;" role="alert">
+                Mensaje enviado con éxito. Te responderemos pronto.
+              </div>
+
+              <div class="form__group">
+                <label for="contact-nombre" class="form__label">Nombre completo *</label>
+                <input type="text" class="form__input" id="contact-nombre" required 
+                       placeholder="Tu nombre" aria-required="true">
+              </div>
+              <div class="form__group">
+                <label for="contact-email" class="form__label">Correo electrónico *</label>
+                <input type="email" class="form__input" id="contact-email" required 
+                       placeholder="tu@email.com" aria-required="true">
+              </div>
+              <div class="form__group">
+                <label for="contact-mensaje" class="form__label">Mensaje *</label>
+                <textarea class="form__textarea" id="contact-mensaje" required 
+                          placeholder="Escribe tu mensaje aquí..." aria-required="true"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary w-full">Enviar Mensaje</button>
+            </form>
           </div>
 
+          <!-- Mapa de Google Maps embebido -->
+          <div>
+            <h2>Encuéntranos</h2>
+            <div class="map-container">
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3901.765432!2d-77.042!3d-12.045!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDAyJzQyLjAiUyA3N8KwMDInMzEuMiJX!5e0!3m2!1ses!2spe!4v1"
+                title="Ubicación de la tienda"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                aria-label="Mapa de Google Maps mostrando la ubicación de la tienda">
+              </iframe>
+            </div>
+            <div style="margin-top: var(--spacing-lg);">
+              <p><strong>Dirección:</strong> Av. Principal 123, Lima, Perú</p>
+              <p><strong>Teléfono:</strong> (123) 456-7890</p>
+              <p><strong>Email:</strong> info@mitienda.com</p>
+              <p><strong>Horario:</strong> Lun - Sáb: 9:00 AM - 8:00 PM</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
+  </main>
 
-    <!-- Google Maps -->
-    <div style="margin-top:60px;">
-      <h2 class="section-title">Visítanos</h2>
-      <p class="section-subtitle">Encuéntranos en nuestra tienda física</p>
-      <div class="mapa-container">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3901.876445208301!2d-77.02875868519078!3d-12.046213945379845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c8b3e1c1e1c1%3A0x1e1c1e1c1e1c1e1c!2sMiraflores%2C%20Lima%2C%20Peru!5e0!3m2!1ses!2s!4v1" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer__container">
+      <div>
+        <h3 class="footer__title">MiTiendaOnline</h3>
+        <p>Tu tienda de confianza con los mejores productos y precios.</p>
+      </div>
+      <div>
+        <h3 class="footer__title">Enlaces Rápidos</h3>
+        <nav class="footer__links" aria-label="Enlaces del pie de página">
+          <a href="nosotros.html">Sobre Nosotros</a>
+          <a href="catalogo.html">Catálogo</a>
+          <a href="contacto.html">Contacto</a>
+        </nav>
+      </div>
+      <div>
+        <h3 class="footer__title">Contacto</h3>
+        <p>📧 info@mitienda.com</p>
+        <p>📞 (123) 456-7890</p>
+        <p>📍 Av. Principal 123, Lima</p>
       </div>
     </div>
-  </section>
-
-  <footer class="footer">
-    <div class="footer-grid">
-      <div>
-        <h4>ShopExpress</h4>
-        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">Tu tienda online de confianza.</p>
-      </div>
-      <div>
-        <h4>Enlaces</h4>
-        <a href="/">Inicio</a>
-        <a href="/catalogo.html">Tienda</a>
-        <a href="/nosotros.html">Nosotros</a>
-      </div>
-      <div>
-        <h4>Contacto</h4>
-        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">📞 +51 999 888 777</p>
-        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">✉️ hola@shopexpress.com</p>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 ShopExpress. Todos los derechos reservados.</p>
+    <div class="footer__bottom">
+      <p>&copy; 2026 MiTiendaOnline. Todos los derechos reservados.</p>
     </div>
   </footer>
 
-  <script src="js/cart.js"></script>
+  <!-- CHATBOT -->
+  <div class="chatbot">
+    <button class="chatbot__btn" id="chatbot-btn" aria-label="Abrir chat de ayuda" aria-expanded="false">💬</button>
+    <div class="chatbot__window" id="chatbot-window" role="dialog" aria-label="Ventana de chat">
+      <div class="chatbot__header">Asistente Virtual</div>
+      <div class="chatbot__messages" id="chatbot-messages" role="list"></div>
+      <div class="chatbot__messages" id="chatbot-typing" style="display:none; padding: 0 var(--spacing-md);"><small style="color: var(--text-muted);">Escribiendo...</small></div>
+      <div class="chatbot__input-area">
+        <input type="text" class="chatbot__input" id="chatbot-input" placeholder="Escribe tu mensaje..." aria-label="Escribe tu mensaje">
+        <button class="chatbot__send" id="chatbot-send" aria-label="Enviar mensaje">Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
   <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/chatbot.js"></script>
   <script>
-    // ============================================
-    // ENVÍO DEL FORMULARIO DE CONTACTO
-    // ============================================
-    // Por defecto simula el envío (demostración).
-    //
-    // Para enviar a un correo REAL:
-    // 1. Crea una cuenta gratis en https://formspree.io
-    // 2. Crea un nuevo formulario y copia tu Form ID
-    // 3. Reemplaza 'MI_FORM_ID' más abajo con tu ID
-    // 4. El formulario enviará los datos a tu correo
-    // ============================================
-    const FORMSPREE_ID = 'xbdaorze'; // Ej: 'xyzabc123'
-
-    async function handleContact(e) {
-      e.preventDefault();
-
-      const alertDiv = document.getElementById('contact-alert');
-      const submitBtn = document.getElementById('contact-submit');
-      const nombre = document.getElementById('contact-nombre').value.trim();
-      const email = document.getElementById('contact-email').value.trim();
-      const asunto = document.getElementById('contact-asunto').value.trim();
-      const mensaje = document.getElementById('contact-mensaje').value.trim();
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Enviando...';
-
-      // Mostrar loading
-      alertDiv.innerHTML = '<div style="padding:12px 20px;border-radius:8px;background:#f0fdf4;color:#10b981;border:1px solid #bbf7d0;font-size:0.9rem;">⏳ Enviando mensaje...</div>';
-
-      try {
-        // Si hay un Formspree ID configurado, enviar a Formspree
-        if (FORMSPREE_ID) {
-          const response = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify({ nombre, email, asunto, mensaje, _replyto: email })
-          });
-
-          if (!response.ok) {
-            const errData = await response.json();
-            throw new Error(errData.error || 'Error al enviar el mensaje');
-          }
-        } else {
-          // Modo demostración: simular envío (sin Formspree configurado)
-          await new Promise(resolve => setTimeout(resolve, 1200));
-        }
-
-        alertDiv.innerHTML = '<div class="alert alert-success">✅ ¡Mensaje enviado con éxito! Te responderemos pronto.</div>';
-        document.getElementById('contact-form').reset();
-      } catch (err) {
-        alertDiv.innerHTML = `<div class="alert alert-error">❌ ${err.message}</div>`;
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Enviar mensaje';
-      }
-
-      // Auto-limpiar alerta después de 5s
-      setTimeout(() => {
-        const alert = alertDiv.querySelector('.alert');
-        if (alert) alert.remove();
-      }, 5000);
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
-      loadHeader();
-      initAuth();
+      // Dark mode toggle
+      const toggle = document.getElementById('theme-toggle');
+      const html = document.documentElement;
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      html.setAttribute('data-theme', savedTheme);
+      toggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+      toggle.addEventListener('click', () => {
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        toggle.textContent = next === 'dark' ? '☀️' : '🌙';
+      });
+
+      // Menú hamburguesa
+      document.getElementById('menu-btn').addEventListener('click', () => {
+        document.getElementById('main-nav').classList.toggle('open');
+      });
+
+      // Formulario de contacto
+      const contactForm = document.getElementById('contact-form');
+      if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const nombre = document.getElementById('contact-nombre').value.trim();
+          const email = document.getElementById('contact-email').value.trim();
+          const mensaje = document.getElementById('contact-mensaje').value.trim();
+          const errorDiv = document.getElementById('contact-error');
+          const successDiv = document.getElementById('contact-success');
+
+          errorDiv.style.display = 'none';
+          successDiv.style.display = 'none';
+
+          if (!nombre || !email || !mensaje) {
+            errorDiv.textContent = 'Todos los campos son obligatorios.';
+            errorDiv.style.display = 'block';
+            return;
+          }
+
+          if (!email.includes('@')) {
+            errorDiv.textContent = 'Ingresa un correo electrónico válido.';
+            errorDiv.style.display = 'block';
+            return;
+          }
+
+          try {
+            const { error } = await supabase
+              .from('contactos')
+              .insert({ nombre, email, mensaje });
+
+            if (error) throw error;
+
+            successDiv.style.display = 'block';
+            contactForm.reset();
+          } catch (err) {
+            errorDiv.textContent = 'Error al enviar el mensaje. Intenta de nuevo.';
+            errorDiv.style.display = 'block';
+          }
+        });
+      }
     });
   </script>
 </body>

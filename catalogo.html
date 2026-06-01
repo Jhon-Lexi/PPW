@@ -1,70 +1,158 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tienda - ShopExpress</title>
+  <meta name="description" content="Explora nuestro catálogo de productos. Filtra por categoría y encuentra lo que buscas.">
+  <title>Catálogo | MiTiendaOnline</title>
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-client.js"></script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛍️</text></svg>">
 </head>
 <body>
-  <div id="toast-container" class="toast-container"></div>
-  <header class="header"></header>
+  <a href="#main-content" class="skip-link" aria-label="Saltar al contenido principal">Saltar al contenido principal</a>
 
-  <section class="section">
-    <h2 class="section-title">Nuestros productos</h2>
-    <p class="section-subtitle">Explora, filtra y encuentra lo que buscas</p>
-
-    <div class="filtros-bar">
-      <input type="text" id="filtro-busqueda" placeholder="Buscar productos..." style="flex:2;min-width:200px;">
-      <select id="filtro-categoria">
-        <option value="">Todas las categorías</option>
-      </select>
-      <select id="filtro-orden">
-        <option value="">Ordenar por</option>
-        <option value="precio-asc">Menor precio</option>
-        <option value="precio-desc">Mayor precio</option>
-        <option value="nombre">A-Z</option>
-      </select>
+  <!-- HEADER -->
+  <header class="header" role="banner">
+    <div class="header__container">
+      <a href="index.html" class="header__logo" aria-label="Ir al inicio">🛍️ MiTienda</a>
+      <button class="header__menu-btn" id="menu-btn" aria-label="Abrir menú de navegación" aria-expanded="false">☰</button>
+      <nav class="header__nav" id="main-nav" role="navigation" aria-label="Navegación principal">
+        <a href="index.html">Inicio</a>
+        <a href="nosotros.html">Nosotros</a>
+        <a href="catalogo.html" class="active" aria-current="page">Catálogo</a>
+        <a href="contacto.html">Contacto</a>
+        <a href="login.html" id="login-link">Iniciar Sesión</a>
+        <a href="registro.html" id="register-link">Registrarse</a>
+        <a href="admin/index.html" id="admin-link" style="display:none;">Admin</a>
+        <a href="carrito.html" class="cart-badge" aria-label="Carrito de compras">🛒 <span class="cart-badge__count" role="status" aria-live="polite">0</span></a>
+        <a href="#" id="logout-btn" style="display:none;" aria-label="Cerrar sesión">Cerrar Sesión</a>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar modo oscuro/claro">🌙</button>
+      </nav>
     </div>
+  </header>
 
-    <div class="productos-grid" id="productos-grid">
-      <div class="loading">
-        <div class="spinner"></div>
-        <p>Cargando productos...</p>
+  <!-- MAIN -->
+  <main id="main-content" class="main-content" role="main">
+    <section class="hero" style="min-height: 30vh; padding: var(--spacing-xl) var(--spacing-md);">
+      <div class="hero__content">
+        <h1 class="hero__title">Catálogo de Productos</h1>
+        <p class="hero__subtitle">Encuentra todo lo que necesitas. Usa los filtros para buscar por categoría.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <!-- Barra de búsqueda y filtros -->
+        <div class="search-bar" role="search" aria-label="Búsqueda de productos">
+          <input type="search" class="search-bar__input" id="search-input" 
+                 placeholder="Buscar productos..." aria-label="Buscar productos">
+          <select class="search-bar__select" id="category-filter" aria-label="Filtrar por categoría">
+            <option value="">Todas las categorías</option>
+          </select>
+        </div>
+
+        <!-- Grid de productos -->
+        <div id="productos-container" class="grid">
+          <div class="spinner" role="status"><span class="sr-only">Cargando productos...</span></div>
+        </div>
+
+        <!-- Mensaje de no resultados -->
+        <div id="no-results" class="text-center" style="display:none; padding: var(--spacing-2xl) 0;">
+          <p style="font-size: var(--font-size-lg); color: var(--text-muted);">
+            No se encontraron productos con los filtros seleccionados.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer__container">
+      <div>
+        <h3 class="footer__title">MiTiendaOnline</h3>
+        <p>Tu tienda de confianza con los mejores productos y precios.</p>
+      </div>
+      <div>
+        <h3 class="footer__title">Enlaces Rápidos</h3>
+        <nav class="footer__links" aria-label="Enlaces del pie de página">
+          <a href="nosotros.html">Sobre Nosotros</a>
+          <a href="catalogo.html">Catálogo</a>
+          <a href="contacto.html">Contacto</a>
+        </nav>
+      </div>
+      <div>
+        <h3 class="footer__title">Contacto</h3>
+        <p>📧 info@mitienda.com</p>
+        <p>📞 (123) 456-7890</p>
+        <p>📍 Av. Principal 123, Lima</p>
       </div>
     </div>
-  </section>
-
-  <footer class="footer">
-    <div class="footer-grid">
-      <div>
-        <h4>ShopExpress</h4>
-        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">Tu tienda online de confianza.</p>
-      </div>
-      <div>
-        <h4>Enlaces</h4>
-        <a href="/">Inicio</a>
-        <a href="/nosotros.html">Nosotros</a>
-        <a href="/contacto.html">Contacto</a>
-      </div>
-      <div>
-        <h4>Contacto</h4>
-        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">📞 +51 999 888 777</p>
-        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">✉️ hola@shopexpress.com</p>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 ShopExpress. Todos los derechos reservados.</p>
+    <div class="footer__bottom">
+      <p>&copy; 2026 MiTiendaOnline. Todos los derechos reservados.</p>
     </div>
   </footer>
 
-  <script src="js/cart.js"></script>
+  <!-- CHATBOT -->
+  <div class="chatbot">
+    <button class="chatbot__btn" id="chatbot-btn" aria-label="Abrir chat de ayuda" aria-expanded="false">💬</button>
+    <div class="chatbot__window" id="chatbot-window" role="dialog" aria-label="Ventana de chat">
+      <div class="chatbot__header">Asistente Virtual</div>
+      <div class="chatbot__messages" id="chatbot-messages" role="list"></div>
+      <div class="chatbot__messages" id="chatbot-typing" style="display:none; padding: 0 var(--spacing-md);"><small style="color: var(--text-muted);">Escribiendo...</small></div>
+      <div class="chatbot__input-area">
+        <input type="text" class="chatbot__input" id="chatbot-input" placeholder="Escribe tu mensaje..." aria-label="Escribe tu mensaje">
+        <button class="chatbot__send" id="chatbot-send" aria-label="Enviar mensaje">Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
   <script src="js/auth.js"></script>
-  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/productos.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', initCatalogo);
+    document.addEventListener('DOMContentLoaded', () => {
+      // Dark mode toggle
+      const toggle = document.getElementById('theme-toggle');
+      const html = document.documentElement;
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      html.setAttribute('data-theme', savedTheme);
+      toggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+      toggle.addEventListener('click', () => {
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        toggle.textContent = next === 'dark' ? '☀️' : '🌙';
+      });
+
+      // Menú hamburguesa
+      document.getElementById('menu-btn').addEventListener('click', () => {
+        document.getElementById('main-nav').classList.toggle('open');
+      });
+
+      // Cargar categorías en el filtro
+      cargarCategorias();
+
+      // Cargar todos los productos
+      cargarProductos('productos-container');
+
+      // Eventos de búsqueda y filtro
+      const searchInput = document.getElementById('search-input');
+      const categoryFilter = document.getElementById('category-filter');
+
+      const aplicarFiltros = () => {
+        cargarProductos('productos-container', {
+          search: searchInput.value,
+          categoria: categoryFilter.value
+        });
+      };
+
+      searchInput.addEventListener('input', aplicarFiltros);
+      categoryFilter.addEventListener('change', aplicarFiltros);
+    });
   </script>
 </body>
 </html>
