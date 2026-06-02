@@ -699,6 +699,21 @@ tbody tr:hover { background: rgba(255,255,255,0.02); }
     width: 16px; height: 16px;
 }
 
+/* ---------- CHECKOUT MODAL ---------- */
+#checkout-overlay .modal { max-width: 640px; }
+#checkout-overlay .step-dot { transition: all 0.3s ease; }
+#checkout-overlay input[type="radio"]:checked + div { border-color: var(--accent); }
+
+/* ---------- FORM STYLES ---------- */
+input[type="text"].font-mono, input[type="tel"].font-mono {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+}
+
+/* ---------- ORDER CARDS ---------- */
+.order-card { transition: all 0.3s ease; }
+.order-card:hover { border-color: rgba(245,158,11,0.3); transform: translateY(-2px); }
+
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 768px) {
     .section { padding: 60px 0; }

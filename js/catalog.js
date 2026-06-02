@@ -11,6 +11,19 @@ const Catalog = {
     async init() {
         this.setupEventListeners();
         await this.loadProducts();
+        this.handleUrlParams();
+    },
+
+    // Procesar parámetros de URL (ej: ?cat=Electrónica)
+    handleUrlParams() {
+        const params = new URLSearchParams(window.location.search);
+        const cat = params.get('cat');
+        if (cat) {
+            this.toggleCategory(cat);
+            document.querySelectorAll('#category-filters input[type="checkbox"]').forEach(cb => {
+                if (cb.value === cat) cb.checked = true;
+            });
+        }
     },
 
     // Cargar productos desde Supabase
@@ -180,6 +193,8 @@ const Catalog = {
         `).join('');
     }
 };
+
+window.Catalog = Catalog;
 
 // Inicializar al cargar la página
 document.addEventListener('DOMContentLoaded', () => {

@@ -111,8 +111,11 @@ async function renderAuthControls() {
                         <span class="text-sm hidden sm:inline">${user.email?.split('@')[0] || 'Usuario'}</span>
                         <i class="fas fa-chevron-down text-xs"></i>
                     </button>
-                    <div id="user-dropdown" class="hidden absolute right-0 top-full mt-2 w-48 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl py-2 z-50 animate-slide-down">
+                    <div id="user-dropdown" class="hidden absolute right-0 top-full mt-2 w-56 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl py-2 z-50 animate-slide-down">
                         <div class="px-4 py-2 text-sm text-gray-400 border-b border-zinc-700 truncate">${user.email}</div>
+                        <a href="orders.html" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-800 transition-colors">
+                            <i class="fas fa-receipt mr-2"></i> Mis Pedidos
+                        </a>
                         ${isAdmin ? '<a href="admin/dashboard.html" class="block px-4 py-2 text-sm text-amber-500 hover:bg-zinc-800 transition-colors"><i class="fas fa-shield-alt mr-2"></i> Admin Panel</a>' : ''}
                         <button onclick="handleLogout()" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-zinc-800 transition-colors">
                             <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión

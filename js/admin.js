@@ -250,6 +250,8 @@ const Admin = {
     }
 };
 
+window.Admin = Admin;
+
 // Inicialización por página
 document.addEventListener('DOMContentLoaded', () => {
     const page = window.location.pathname;

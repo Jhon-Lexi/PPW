@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrito - PremiumStore</title>
-    <meta name="description" content="Revisa tu carrito de compras y finaliza tu pedido.">
+    <title>Mis Pedidos - PremiumStore</title>
+    <meta name="description" content="Historial de tus pedidos en PremiumStore.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
@@ -21,61 +21,27 @@
 
     <section class="pt-32 pb-8 bg-zinc-900/30">
         <div class="max-w-7xl mx-auto px-4">
-            <h1 class="text-3xl md:text-4xl font-extrabold">Tu Carrito</h1>
-            <p class="text-gray-400 mt-2"><span class="cart-count">0</span> artículo(s) en tu carrito</p>
+            <h1 class="text-3xl md:text-4xl font-extrabold">Mis Pedidos</h1>
+            <p class="text-gray-400 mt-2">Historial de tus compras en PremiumStore</p>
         </div>
     </section>
 
     <section class="pb-20">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 space-y-4" id="cart-items">
-                    <div class="text-center py-20"><div class="spinner mx-auto"></div></div>
-                </div>
-                <div id="cart-summary"></div>
+        <div class="max-w-4xl mx-auto px-4 space-y-4" id="orders-container">
+            <div class="text-center py-20">
+                <div class="spinner mx-auto"></div>
             </div>
         </div>
     </section>
 
-    <!-- ============================================================ -->
-    <!-- CHECKOUT MODAL - 3 PASOS (Envío → Pago → Revisar) -->
-    <!-- ============================================================ -->
-    <div class="modal-overlay" id="checkout-overlay">
-        <div class="modal" style="max-width: 640px;">
-            <!-- Header con pasos -->
-            <div id="checkout-header" class="modal-header">
-                <h3 class="modal-title">Finalizar Compra</h3>
-                <button onclick="Checkout.close()" class="modal-close"><i class="fas fa-times"></i></button>
+    <!-- MODAL DETALLE PEDIDO -->
+    <div class="modal-overlay" id="order-detail-overlay">
+        <div class="modal" style="max-width: 560px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Detalle del Pedido</h3>
+                <button onclick="document.getElementById('order-detail-overlay').classList.remove('active')" class="modal-close"><i class="fas fa-times"></i></button>
             </div>
-
-            <!-- Indicador de pasos -->
-            <div class="flex justify-center gap-4 mb-8">
-                <div class="flex flex-col items-center">
-                    <div class="step-dot w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-amber-500 text-black">1</div>
-                    <span class="step-label text-xs mt-1 text-amber-500 font-semibold">Envío</span>
-                </div>
-                <div class="flex items-center mt-4">
-                    <div class="w-12 h-0.5 bg-zinc-700"></div>
-                </div>
-                <div class="flex flex-col items-center">
-                    <div class="step-dot w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-zinc-700 text-gray-400">2</div>
-                    <span class="step-label text-xs mt-1 text-gray-500">Pago</span>
-                </div>
-                <div class="flex items-center mt-4">
-                    <div class="w-12 h-0.5 bg-zinc-700"></div>
-                </div>
-                <div class="flex flex-col items-center">
-                    <div class="step-dot w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-zinc-700 text-gray-400">3</div>
-                    <span class="step-label text-xs mt-1 text-gray-500">Revisar</span>
-                </div>
-            </div>
-
-            <!-- Contenido dinámico -->
-            <div id="checkout-content">
-                <div class="text-center py-10">
-                    <div class="spinner mx-auto"></div>
-                </div>
-            </div>
+            <div id="order-detail-content"></div>
         </div>
     </div>
 
@@ -123,9 +89,26 @@
     </footer>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        Cart.renderItems(document.getElementById('cart-items'));
-        Cart.renderSummary(document.getElementById('cart-summary'));
+    document.addEventListener('DOMContentLoaded', async () => {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        if (!user) {
+            document.getElementById('orders-container').innerHTML = `
+                <div class="text-center py-20">
+                    <i class="fas fa-user-lock text-6xl text-gray-700 mb-6"></i>
+                    <h3 class="text-xl font-semibold mb-2">Inicia sesión para ver tus pedidos</h3>
+                    <p class="text-gray-400 mb-6">Debes iniciar sesión para acceder a tu historial de compras</p>
+                    <a href="login.html" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a>
+                </div>
+            `;
+            return;
+        }
+        await Orders.render(document.getElementById('orders-container'));
+
+        // Close modal on overlay click
+        const overlay = document.getElementById('order-detail-overlay');
+        overlay?.addEventListener('click', (e) => {
+            if (e.target === overlay) overlay.classList.remove('active');
+        });
     });
     </script>
 </body>

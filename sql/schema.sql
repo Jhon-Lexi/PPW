@@ -33,12 +33,28 @@ CREATE TABLE IF NOT EXISTS contacts (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 4. ORDERS TABLE
+CREATE TABLE IF NOT EXISTS orders (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id) NOT NULL,
+    order_number TEXT UNIQUE NOT NULL,
+    items JSONB NOT NULL,
+    subtotal DECIMAL(10,2) NOT NULL,
+    shipping_cost DECIMAL(10,2) DEFAULT 0,
+    total DECIMAL(10,2) NOT NULL,
+    shipping_info JSONB NOT NULL,
+    payment_method TEXT NOT NULL,
+    status TEXT DEFAULT 'confirmed' CHECK (status IN ('confirmed', 'processing', 'shipped', 'delivered', 'cancelled')),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- ============================================================
 -- ROW LEVEL SECURITY
 -- ============================================================
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contacts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 
 -- PROFILES POLICIES
 CREATE POLICY "Users can view own profile"
@@ -84,6 +100,21 @@ CREATE POLICY "Admins can delete products"
 CREATE POLICY "Anyone can insert contacts"
     ON contacts FOR INSERT
     WITH CHECK (true);
+
+-- ORDERS POLICIES
+CREATE POLICY "Users can view own orders"
+    ON orders FOR SELECT
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own orders"
+    ON orders FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Admins can view all orders"
+    ON orders FOR SELECT
+    USING (
+        EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+    );
 
 -- ============================================================
 -- TRIGGER: Create profile on user signup
