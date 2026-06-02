@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Usuarios - PremiumStore</title>
+    <meta name="description" content="Gestión de usuarios del sistema.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/cart.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/admin.js"></script>
+    <style>
+        .admin-layout { display: flex; min-height: 100vh; padding-top: 64px; }
+        .admin-sidebar { width: 260px; background: #111; border-right: 1px solid #27272a; padding: 24px 16px; position: fixed; top: 64px; left: 0; bottom: 0; overflow-y: auto; }
+        .admin-content { flex: 1; margin-left: 260px; padding: 32px; }
+        .admin-sidebar a { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; color: #a1a1aa; transition: all 0.2s; font-size: 0.875rem; font-weight: 500; }
+        .admin-sidebar a:hover { background: #1a1a1a; color: #fafafa; }
+        .admin-sidebar a.active { background: rgba(245,158,11,0.1); color: #f59e0b; }
+        @media (max-width: 768px) {
+            .admin-sidebar { display: none; }
+            .admin-content { margin-left: 0; padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header"></header>
+
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="flex items-center gap-2 mb-8 px-2">
+                <i class="fas fa-shield-alt text-amber-500"></i>
+                <span class="font-bold">Admin Panel</span>
+            </div>
+            <nav class="flex flex-col gap-1">
+                <a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a>
+                <a href="products.html"><i class="fas fa-box"></i> Productos</a>
+                <a href="users.html" class="active"><i class="fas fa-users"></i> Usuarios</a>
+                <hr class="border-zinc-800 my-3">
+                <a href="../index.html"><i class="fas fa-arrow-left"></i> Volver a la Tienda</a>
+            </nav>
+        </aside>
+
+        <main class="admin-content">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-2xl font-extrabold">Usuarios</h1>
+                    <p class="text-gray-400 text-sm">Gestiona los usuarios y sus roles</p>
+                </div>
+            </div>
+
+            <!-- TABLA -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th>Registro</th>
+                            <th>Cambiar Rol</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                        <tr><td colspan="5" class="text-center py-10"><div class="spinner mx-auto"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

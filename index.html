@@ -1,193 +1,245 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Tu tienda online de confianza. Productos electrónicos, ropa, hogar, deportes y más.">
-  <title>Inicio | MiTiendaOnline</title>
-  <link rel="stylesheet" href="css/style.css">
-  <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛍️</text></svg>">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PremiumStore - Tu tienda de confianza</title>
+    <meta name="description" content="Descubre productos premium con los mejores precios. Envíos gratis en compras +$100.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
 </head>
 <body>
-  <!-- Enlace para saltar al contenido principal -->
-  <a href="#main-content" class="skip-link" aria-label="Saltar al contenido principal">Saltar al contenido principal</a>
 
-  <!-- ============================================================
-       HEADER
-       ============================================================ -->
-  <header class="header" role="banner">
-    <div class="header__container">
-      <a href="index.html" class="header__logo" aria-label="Ir al inicio">
-        🛍️ MiTienda
-      </a>
-
-      <button class="header__menu-btn" id="menu-btn" aria-label="Abrir menú de navegación" aria-expanded="false">
-        ☰
-      </button>
-
-      <nav class="header__nav" id="main-nav" role="navigation" aria-label="Navegación principal">
-        <a href="index.html" class="active" aria-current="page">Inicio</a>
-        <a href="nosotros.html">Nosotros</a>
-        <a href="catalogo.html">Catálogo</a>
-        <a href="contacto.html">Contacto</a>
-        <a href="login.html" id="login-link">Iniciar Sesión</a>
-        <a href="registro.html" id="register-link">Registrarse</a>
-        <a href="admin/index.html" id="admin-link" style="display:none;">Admin</a>
-        <a href="carrito.html" class="cart-badge" aria-label="Carrito de compras">
-          🛒 <span class="cart-badge__count" role="status" aria-live="polite">0</span>
-        </a>
-        <a href="#" id="logout-btn" style="display:none;" aria-label="Cerrar sesión">Cerrar Sesión</a>
-        <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar modo oscuro/claro">🌙</button>
-      </nav>
-    </div>
-  </header>
-
-  <!-- ============================================================
-       MAIN CONTENT
-       ============================================================ -->
-  <main id="main-content" class="main-content" role="main">
+    <!-- HEADER -->
+    <header id="main-header"></header>
 
     <!-- HERO -->
-    <section class="hero" aria-label="Bienvenida">
-      <div class="hero__content">
-        <h1 class="hero__title">Descubre Productos Increíbles</h1>
-        <p class="hero__subtitle">
-          Encuentra todo lo que necesitas en un solo lugar. 
-          Electrónica, moda, hogar y más con los mejores precios.
-        </p>
-        <a href="catalogo.html" class="btn btn-primary">Explorar Catálogo</a>
-      </div>
+    <section class="hero">
+        <div class="hero-content">
+            <span class="section-label animate-fade-in">Colección 2026</span>
+            <h1 class="hero-title animate-fade-in stagger-1">
+                Descubre el <span>Lujo</span> <br>de lo Esencial
+            </h1>
+            <p class="hero-subtitle animate-fade-in stagger-2">
+                Productos seleccionados para quienes valoran la calidad, el diseño y la autenticidad.
+                Envíos gratis en compras superiores a $100.
+            </p>
+            <div class="flex flex-wrap gap-4 justify-center animate-fade-in stagger-3">
+                <a href="catalog.html" class="btn btn-primary btn-lg">
+                    <i class="fas fa-shopping-bag"></i> Explorar Productos
+                </a>
+                <a href="about.html" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-info-circle"></i> Conócenos
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATEGORÍAS -->
+    <section class="section bg-zinc-900/30">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center">
+                <span class="section-label">Categorías</span>
+                <h2 class="section-title">Explora por Categoría</h2>
+                <p class="section-subtitle">Encuentra exactamente lo que buscas en nuestras categorías cuidadosamente organizadas</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <a href="catalog.html?cat=Electrónica" class="category-card group">
+                    <img src="https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=400" alt="Electrónica" loading="lazy">
+                    <div class="overlay">
+                        <h3>Electrónica</h3>
+                        <span><i class="fas fa-arrow-right"></i> Ver más</span>
+                    </div>
+                </a>
+                <a href="catalog.html?cat=Ropa" class="category-card group">
+                    <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=400" alt="Ropa" loading="lazy">
+                    <div class="overlay">
+                        <h3>Ropa</h3>
+                        <span><i class="fas fa-arrow-right"></i> Ver más</span>
+                    </div>
+                </a>
+                <a href="catalog.html?cat=Deportes" class="category-card group">
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400" alt="Deportes" loading="lazy">
+                    <div class="overlay">
+                        <h3>Deportes</h3>
+                        <span><i class="fas fa-arrow-right"></i> Ver más</span>
+                    </div>
+                </a>
+                <a href="catalog.html?cat=Hogar" class="category-card group">
+                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400" alt="Hogar" loading="lazy">
+                    <div class="overlay">
+                        <h3>Hogar</h3>
+                        <span><i class="fas fa-arrow-right"></i> Ver más</span>
+                    </div>
+                </a>
+                <a href="catalog.html?cat=Accesorios" class="category-card group">
+                    <img src="https://images.unsplash.com/photo-1606768666853-403c90a981ad?w=400" alt="Accesorios" loading="lazy">
+                    <div class="overlay">
+                        <h3>Accesorios</h3>
+                        <span><i class="fas fa-arrow-right"></i> Ver más</span>
+                    </div>
+                </a>
+            </div>
+        </div>
     </section>
 
     <!-- PRODUCTOS DESTACADOS -->
-    <section class="section" aria-labelledby="destacados-title">
-      <div class="container">
-        <h2 id="destacados-title" class="section__title">Productos Destacados</h2>
-        <div id="productos-destacados" class="grid">
-          <!-- Se carga dinámicamente con JS -->
-          <div class="spinner" role="status"><span class="sr-only">Cargando productos...</span></div>
+    <section class="section">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center">
+                <span class="section-label">Destacados</span>
+                <h2 class="section-title">Productos Premium</h2>
+                <p class="section-subtitle">Los productos más vendidos y mejor valorados por nuestra comunidad</p>
+            </div>
+            <div class="product-grid" id="featured-grid">
+                <div class="col-span-full flex justify-center py-10">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+            <div class="text-center mt-12">
+                <a href="catalog.html" class="btn btn-outline btn-lg">
+                    Ver Todos los Productos <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
         </div>
-      </div>
     </section>
 
-    <!-- EVENTOS DESTACADOS -->
-    <section class="section" style="background: var(--bg-card);" aria-labelledby="eventos-title">
-      <div class="container">
-        <h2 id="eventos-title" class="section__title">Próximos Eventos</h2>
-        <div id="eventos-container">
-          <!-- Se carga dinámicamente con JS -->
-          <div class="spinner" role="status"><span class="sr-only">Cargando eventos...</span></div>
+    <!-- BANNER -->
+    <section class="py-20 relative overflow-hidden"
+        style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
+        <div class="absolute inset-0 opacity-10"
+            style="background: url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23f59e0b\" fill-opacity=\"0.3\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
         </div>
-      </div>
+        <div class="max-w-4xl mx-auto text-center relative z-10 px-4">
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-6">Envío Gratis en tu Primera Compra</h2>
+            <p class="text-gray-300 text-lg mb-8">Usa el código <span class="text-amber-500 font-bold bg-white/10 px-4 py-2 rounded-lg">PREMIUM2026</span> y obtén envío gratis en toda la tienda</p>
+            <a href="catalog.html" class="btn btn-primary btn-lg">
+                <i class="fas fa-gift"></i> Aprovechar Oferta
+            </a>
+        </div>
     </section>
 
-    <!-- NEWSLETTER / CTA -->
-    <section class="section" style="text-align: center;" aria-labelledby="newsletter-title">
-      <div class="container">
-        <h2 id="newsletter-title" class="section__title">¿Listo para empezar?</h2>
-        <p style="color: var(--text-secondary); margin-bottom: var(--spacing-lg); max-width: 500px; margin-left: auto; margin-right: auto;">
-          Regístrate gratis y obtén acceso a ofertas exclusivas, envíos gratis y mucho más.
-        </p>
-        <a href="registro.html" class="btn btn-primary">Crear Cuenta Gratis</a>
-      </div>
+    <!-- NEWSLETTER -->
+    <section class="section">
+        <div class="max-w-xl mx-auto text-center px-4">
+            <span class="section-label">Newsletter</span>
+            <h2 class="section-title">Mantente al Día</h2>
+            <p class="section-subtitle">Recibe nuestras mejores ofertas y novedades directamente en tu correo</p>
+            <form id="newsletter-form" class="flex gap-3 max-w-md mx-auto">
+                <input type="email" placeholder="tu@email.com" required
+                    class="form-input flex-1">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
     </section>
 
-  </main>
+    <!-- FOOTER -->
+    <footer class="border-t border-zinc-800 py-12">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center gap-2 text-xl font-extrabold mb-4">
+                    <span class="text-amber-500">✦</span>
+                    <span>PREMIUM<span class="text-amber-500">STORE</span></span>
+                </div>
+                <p class="text-gray-400 text-sm">Calidad premium, precios justos. Tu tienda de confianza desde 2024.</p>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Navegación</h4>
+                <div class="flex flex-col gap-2 text-sm text-gray-400">
+                    <a href="index.html" class="hover:text-white transition-colors">Inicio</a>
+                    <a href="catalog.html" class="hover:text-white transition-colors">Catálogo</a>
+                    <a href="about.html" class="hover:text-white transition-colors">Nosotros</a>
+                    <a href="contact.html" class="hover:text-white transition-colors">Contacto</a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Ayuda</h4>
+                <div class="flex flex-col gap-2 text-sm text-gray-400">
+                    <a href="#" class="hover:text-white transition-colors">FAQ</a>
+                    <a href="#" class="hover:text-white transition-colors">Envíos</a>
+                    <a href="#" class="hover:text-white transition-colors">Devoluciones</a>
+                    <a href="#" class="hover:text-white transition-colors">Términos</a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Síguenos</h4>
+                <div class="flex gap-4 text-gray-400">
+                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 text-sm mt-10 pt-6 border-t border-zinc-800/50">
+            &copy; 2026 PremiumStore. Todos los derechos reservados.
+        </div>
+    </footer>
 
-  <!-- ============================================================
-       FOOTER
-       ============================================================ -->
-  <footer class="footer" role="contentinfo">
-    <div class="footer__container">
-      <div>
-        <h3 class="footer__title">MiTiendaOnline</h3>
-        <p>Tu tienda de confianza con los mejores productos y precios.</p>
-      </div>
-      <div>
-        <h3 class="footer__title">Enlaces Rápidos</h3>
-        <nav class="footer__links" aria-label="Enlaces del pie de página">
-          <a href="nosotros.html">Sobre Nosotros</a>
-          <a href="catalogo.html">Catálogo</a>
-          <a href="contacto.html">Contacto</a>
-        </nav>
-      </div>
-      <div>
-        <h3 class="footer__title">Contacto</h3>
-        <p>📧 info@mitienda.com</p>
-        <p>📞 (123) 456-7890</p>
-        <p>📍 Av. Principal 123, Lima</p>
-      </div>
-    </div>
-    <div class="footer__bottom">
-      <p>&copy; 2026 MiTiendaOnline. Todos los derechos reservados.</p>
-    </div>
-  </footer>
+    <script>
+    // Cargar productos destacados
+    document.addEventListener('DOMContentLoaded', async () => {
+        const grid = document.getElementById('featured-grid');
+        try {
+            const { data, error } = await supabaseClient
+                .from('products')
+                .select('*')
+                .limit(4);
 
-  <!-- ============================================================
-       CHATBOT
-       ============================================================ -->
-  <div class="chatbot">
-    <button class="chatbot__btn" id="chatbot-btn" aria-label="Abrir chat de ayuda" aria-expanded="false">
-      💬
-    </button>
-    <div class="chatbot__window" id="chatbot-window" role="dialog" aria-label="Ventana de chat">
-      <div class="chatbot__header">Asistente Virtual</div>
-      <div class="chatbot__messages" id="chatbot-messages" role="list"></div>
-      <div class="chatbot__messages" id="chatbot-typing" style="display:none; padding: 0 var(--spacing-md);">
-        <small style="color: var(--text-muted);">Escribiendo...</small>
-      </div>
-      <div class="chatbot__input-area">
-        <input type="text" class="chatbot__input" id="chatbot-input" placeholder="Escribe tu mensaje..." aria-label="Escribe tu mensaje">
-        <button class="chatbot__send" id="chatbot-send" aria-label="Enviar mensaje">Enviar</button>
-      </div>
-    </div>
-  </div>
+            if (error) throw error;
 
-  <!-- ============================================================
-       SCRIPTS
-       ============================================================ -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/cart.js"></script>
-  <script src="js/chatbot.js"></script>
-  <script src="js/eventos.js"></script>
-  <script src="js/productos.js"></script>
-  <script>
-    // ============================================================
-    // DARK MODE TOGGLE
-    // ============================================================
-    document.addEventListener('DOMContentLoaded', () => {
-      const toggle = document.getElementById('theme-toggle');
-      const html = document.documentElement;
-      const savedTheme = localStorage.getItem('theme') || 'light';
+            if (!data || data.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-10 text-gray-500">
+                        <i class="fas fa-box-open text-4xl mb-4"></i>
+                        <p>No hay productos disponibles aún</p>
+                        <p class="text-sm mt-2">Agrega productos desde el panel de administración</p>
+                    </div>
+                `;
+                return;
+            }
 
-      html.setAttribute('data-theme', savedTheme);
-      toggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+            grid.innerHTML = data.map(p => `
+                <div class="product-card animate-fade-in">
+                    <div class="img-wrap">
+                        <img src="${p.image_url || 'https://via.placeholder.com/400'}" alt="${p.name}" loading="lazy"
+                            onerror="this.src='https://via.placeholder.com/400x300/1a1a1a/666?text=Sin+Imagen'">
+                        <span class="card-tag">${p.category || 'General'}</span>
+                    </div>
+                    <div class="info">
+                        <h3>${p.name}</h3>
+                        <p class="desc">${p.description || ''}</p>
+                        <div class="bottom">
+                            <span class="price">$${Number(p.price).toFixed(2)}</span>
+                            <button onclick="Cart.add({id:'${p.id}', name:'${p.name.replace(/'/g, "\\'")}', price:${p.price}, image_url:'${p.image_url || ''}'})"
+                                class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        } catch (err) {
+            grid.innerHTML = `<div class="col-span-full text-center py-10 text-gray-500">Error al cargar productos</div>`;
+        }
 
-      toggle.addEventListener('click', () => {
-        const current = html.getAttribute('data-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
-        html.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-        toggle.textContent = next === 'dark' ? '☀️' : '🌙';
-      });
-
-      // Menú hamburguesa
-      const menuBtn = document.getElementById('menu-btn');
-      const mainNav = document.getElementById('main-nav');
-      menuBtn.addEventListener('click', () => {
-        const isOpen = mainNav.classList.toggle('open');
-        menuBtn.setAttribute('aria-expanded', isOpen);
-      });
-
-      // Cargar productos destacados
-      cargarProductos('productos-destacados', { limit: 3 });
-
-      // Cargar eventos
-      cargarEventos('eventos-container');
+        // Newsletter
+        document.getElementById('newsletter-form')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            Toast.show('¡Gracias por suscribirte!', 'success');
+            e.target.reset();
+        });
     });
-  </script>
+    </script>
+
 </body>
 </html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - PremiumStore</title>
+    <meta name="description" content="Contáctanos. Estamos aquí para ayudarte con cualquier consulta.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/contact.js"></script>
+</head>
+<body>
+
+    <header id="main-header"></header>
+
+    <!-- HERO CONTACTO -->
+    <section class="pt-32 pb-16 relative overflow-hidden"
+        style="background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);">
+        <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
+            <span class="section-label">Contacto</span>
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-6">Estamos para Ayudarte</h1>
+            <p class="text-gray-400 max-w-2xl mx-auto text-lg">
+                ¿Tienes alguna pregunta o comentario? Nos encantaría escucharte.
+            </p>
+        </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section class="section">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- FORMULARIO -->
+            <div>
+                <h2 class="text-2xl font-bold mb-6">Envíanos un Mensaje</h2>
+                <form id="contact-form" class="space-y-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label">Nombre *</label>
+                            <input type="text" id="name" class="form-input" placeholder="Tu nombre" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Email *</label>
+                            <input type="email" id="email" class="form-input" placeholder="tu@email.com" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Asunto</label>
+                        <input type="text" id="subject" class="form-input" placeholder="¿Sobre qué nos quieres escribir?">
+                    </div>
+                    <div>
+                        <label class="form-label">Mensaje *</label>
+                        <textarea id="message" class="form-textarea" placeholder="Escribe tu mensaje aquí..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-full">
+                        <i class="fas fa-paper-plane"></i> Enviar Mensaje
+                    </button>
+                </form>
+            </div>
+
+            <!-- INFORMACIÓN -->
+            <div>
+                <h2 class="text-2xl font-bold mb-6">Información de Contacto</h2>
+                <div class="space-y-6">
+                    <div class="flex gap-4 items-start">
+                        <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-map-marker-alt text-amber-500"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-1">Dirección</h4>
+                            <p class="text-gray-400 text-sm">Av. Principal 1234, Col. Centro<br>Ciudad de México, CP 06600</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start">
+                        <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-phone-alt text-amber-500"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-1">Teléfono</h4>
+                            <p class="text-gray-400 text-sm">+52 (55) 1234-5678</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start">
+                        <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-envelope text-amber-500"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-1">Email</h4>
+                            <p class="text-gray-400 text-sm">hola@premiumstore.mx</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start">
+                        <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-clock text-amber-500"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-1">Horario</h4>
+                            <p class="text-gray-400 text-sm">Lun - Vie: 9:00 AM - 7:00 PM<br>Sáb: 10:00 AM - 4:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REDES SOCIALES -->
+                <div class="mt-8 pt-8 border-t border-zinc-800">
+                    <h4 class="font-semibold mb-4">Síguenos en Redes</h4>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center text-gray-400 hover:bg-amber-500/20 hover:text-amber-500 transition-all">
+                            <i class="fab fa-instagram text-lg"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center text-gray-400 hover:bg-amber-500/20 hover:text-amber-500 transition-all">
+                            <i class="fab fa-facebook-f text-lg"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center text-gray-400 hover:bg-amber-500/20 hover:text-amber-500 transition-all">
+                            <i class="fab fa-twitter text-lg"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center text-gray-400 hover:bg-amber-500/20 hover:text-amber-500 transition-all">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GOOGLE MAPS -->
+    <section class="pb-20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="rounded-xl overflow-hidden border border-zinc-800">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3762.739637522538!2d-99.13505892532002!3d19.432608281839!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1f92a1e3b1b8d%3A0x6c5d8b3b2c1b2b0!2sPalacio%20de%20Bellas%20Artes!5e0!3m2!1ses!2smx!4v1"
+                    width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-zinc-800 py-12">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center gap-2 text-xl font-extrabold mb-4">
+                    <span class="text-amber-500">✦</span>
+                    <span>PREMIUM<span class="text-amber-500">STORE</span></span>
+                </div>
+                <p class="text-gray-400 text-sm">Calidad premium, precios justos. Tu tienda de confianza desde 2024.</p>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Navegación</h4>
+                <div class="flex flex-col gap-2 text-sm text-gray-400">
+                    <a href="index.html" class="hover:text-white transition-colors">Inicio</a>
+                    <a href="catalog.html" class="hover:text-white transition-colors">Catálogo</a>
+                    <a href="about.html" class="hover:text-white transition-colors">Nosotros</a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Ayuda</h4>
+                <div class="flex flex-col gap-2 text-sm text-gray-400">
+                    <a href="#" class="hover:text-white transition-colors">FAQ</a>
+                    <a href="#" class="hover:text-white transition-colors">Envíos</a>
+                    <a href="#" class="hover:text-white transition-colors">Devoluciones</a>
+                    <a href="#" class="hover:text-white transition-colors">Términos</a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Síguenos</h4>
+                <div class="flex gap-4 text-gray-400">
+                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 text-sm mt-10 pt-6 border-t border-zinc-800/50">
+            &copy; 2026 PremiumStore. Todos los derechos reservados.
+        </div>
+    </footer>
+
+</body>
+</html>

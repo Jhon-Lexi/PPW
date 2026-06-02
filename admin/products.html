@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Productos - PremiumStore</title>
+    <meta name="description" content="Gestión de productos del catálogo.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/cart.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/admin.js"></script>
+    <style>
+        .admin-layout { display: flex; min-height: 100vh; padding-top: 64px; }
+        .admin-sidebar { width: 260px; background: #111; border-right: 1px solid #27272a; padding: 24px 16px; position: fixed; top: 64px; left: 0; bottom: 0; overflow-y: auto; }
+        .admin-content { flex: 1; margin-left: 260px; padding: 32px; }
+        .admin-sidebar a { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; color: #a1a1aa; transition: all 0.2s; font-size: 0.875rem; font-weight: 500; }
+        .admin-sidebar a:hover { background: #1a1a1a; color: #fafafa; }
+        .admin-sidebar a.active { background: rgba(245,158,11,0.1); color: #f59e0b; }
+        @media (max-width: 768px) {
+            .admin-sidebar { display: none; }
+            .admin-content { margin-left: 0; padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header"></header>
+
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="flex items-center gap-2 mb-8 px-2">
+                <i class="fas fa-shield-alt text-amber-500"></i>
+                <span class="font-bold">Admin Panel</span>
+            </div>
+            <nav class="flex flex-col gap-1">
+                <a href="dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a>
+                <a href="products.html" class="active"><i class="fas fa-box"></i> Productos</a>
+                <a href="users.html"><i class="fas fa-users"></i> Usuarios</a>
+                <hr class="border-zinc-800 my-3">
+                <a href="../index.html"><i class="fas fa-arrow-left"></i> Volver a la Tienda</a>
+            </nav>
+        </aside>
+
+        <main class="admin-content">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-2xl font-extrabold">Productos</h1>
+                    <p class="text-gray-400 text-sm">Gestiona el catálogo de productos</p>
+                </div>
+                <button id="new-product-btn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Nuevo Producto
+                </button>
+            </div>
+
+            <!-- TABLA -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Categoría</th>
+                            <th>Stock</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-table-body">
+                        <tr><td colspan="5" class="text-center py-10"><div class="spinner mx-auto"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL PRODUCTO -->
+    <div class="modal-overlay" id="product-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">Nuevo Producto</h3>
+                <button id="modal-close" class="modal-close"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="product-form">
+                <div class="space-y-4">
+                    <div>
+                        <label class="form-label">Nombre del Producto *</label>
+                        <input type="text" id="product-name" class="form-input" placeholder="Ej: Auriculares Bluetooth" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Descripción</label>
+                        <textarea id="product-desc" class="form-textarea" placeholder="Descripción del producto..." rows="3"></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label">Precio *</label>
+                            <input type="number" id="product-price" class="form-input" placeholder="0.00" step="0.01" min="0" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Stock</label>
+                            <input type="number" id="product-stock" class="form-input" placeholder="0" min="0">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Categoría</label>
+                        <input type="text" id="product-category" class="form-input" placeholder="Ej: Electrónica, Ropa...">
+                    </div>
+                    <div>
+                        <label class="form-label">URL de Imagen</label>
+                        <input type="url" id="product-image" class="form-input" placeholder="https://ejemplo.com/imagen.jpg">
+                    </div>
+                </div>
+                <div class="flex gap-3 mt-6 justify-end">
+                    <button type="button" onclick="document.getElementById('product-modal').classList.remove('active')" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

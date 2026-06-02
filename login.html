@@ -1,167 +1,77 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Inicia sesión en MiTiendaOnline para acceder a tu cuenta.">
-  <title>Iniciar Sesión | MiTiendaOnline</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛍️</text></svg>">
-  <style>
-    .social-btn {
-      width: 100%;
-      padding: 0.75rem;
-      border: 2px solid var(--border-color);
-      border-radius: var(--border-radius);
-      background: var(--bg-card);
-      color: var(--text-primary);
-      font-size: var(--font-size-base);
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--spacing-sm);
-      transition: border-color var(--transition-fast);
-      min-height: 44px;
-      font-family: inherit;
-    }
-    .social-btn:hover {
-      border-color: var(--color-primary);
-    }
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-md);
-      margin: var(--spacing-md) 0;
-    }
-    .divider::before,
-    .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border-color);
-    }
-    .divider span {
-      color: var(--text-muted);
-      font-size: var(--font-size-sm);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - PremiumStore</title>
+    <meta name="description" content="Accede a tu cuenta PremiumStore.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
 </head>
 <body>
-  <a href="#main-content" class="skip-link" aria-label="Saltar al contenido principal">Saltar al contenido principal</a>
 
-  <!-- HEADER -->
-  <header class="header" role="banner">
-    <div class="header__container">
-      <a href="index.html" class="header__logo" aria-label="Ir al inicio">🛍️ MiTienda</a>
-      <button class="header__menu-btn" id="menu-btn" aria-label="Abrir menú de navegación" aria-expanded="false">☰</button>
-      <nav class="header__nav" id="main-nav" role="navigation" aria-label="Navegación principal">
-        <a href="index.html">Inicio</a>
-        <a href="nosotros.html">Nosotros</a>
-        <a href="catalogo.html">Catálogo</a>
-        <a href="contacto.html">Contacto</a>
-        <a href="login.html" class="active" aria-current="page">Iniciar Sesión</a>
-        <a href="registro.html">Registrarse</a>
-        <a href="carrito.html" class="cart-badge" aria-label="Carrito de compras">🛒 <span class="cart-badge__count" role="status" aria-live="polite">0</span></a>
-        <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar modo oscuro/claro">🌙</button>
-      </nav>
-    </div>
-  </header>
+    <header id="main-header"></header>
 
-  <!-- MAIN -->
-  <main id="main-content" class="main-content" role="main">
-    <section class="section" style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - var(--header-height));">
-      <div class="container" style="max-width: 450px;">
-        <h1 class="text-center" style="margin-bottom: var(--spacing-lg);">Iniciar Sesión</h1>
+    <section class="min-h-screen flex items-center justify-center pt-20 pb-20"
+        style="background: radial-gradient(ellipse at center, rgba(245,158,11,0.05) 0%, transparent 70%), var(--bg-primary);">
+        <div class="w-full max-w-md px-4">
+            <div class="bg-card border border-zinc-800 rounded-2xl p-8 animate-scale-in">
+                <div class="text-center mb-8">
+                    <div class="text-4xl mb-4">✦</div>
+                    <h1 class="text-2xl font-extrabold">Bienvenido de Vuelta</h1>
+                    <p class="text-gray-400 text-sm mt-2">Ingresa a tu cuenta PremiumStore</p>
+                </div>
 
-        <form class="form" id="login-form" novalidate>
-          <div id="login-error" class="alert alert-error" style="display:none;" role="alert"></div>
+                <form id="login-form" class="space-y-5">
+                    <div>
+                        <label class="form-label">Email</label>
+                        <input type="email" id="email" class="form-input" placeholder="tu@email.com" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" id="password" class="form-input" placeholder="••••••••" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-full">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </button>
+                </form>
 
-          <div class="form__group">
-            <label for="login-email" class="form__label">Correo electrónico</label>
-            <input type="email" class="form__input" id="login-email" required 
-                   placeholder="tu@email.com" autocomplete="email" aria-required="true">
-          </div>
-          <div class="form__group">
-            <label for="login-password" class="form__label">Contraseña</label>
-            <input type="password" class="form__input" id="login-password" required 
-                   placeholder="Tu contraseña" autocomplete="current-password" aria-required="true">
-          </div>
-          <button type="submit" class="btn btn-primary w-full">Iniciar Sesión</button>
-
-          <div class="divider"><span>O continúa con</span></div>
-
-          <button type="button" class="social-btn" id="google-login-btn" aria-label="Iniciar sesión con Google">
-            <span style="font-size: 1.3rem;">G</span> Iniciar sesión con Google
-          </button>
-
-          <div class="form__footer">
-            ¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a>
-          </div>
-        </form>
-
-        <!-- Credenciales de prueba -->
-        <div style="margin-top: var(--spacing-lg); padding: var(--spacing-md); background: var(--bg-card); border-radius: var(--border-radius); border: 1px solid var(--border-color); font-size: var(--font-size-sm);">
-          <p style="font-weight: 600; margin-bottom: var(--spacing-sm);">🔑 Cuentas de prueba:</p>
-          <p><strong>Admin:</strong> admin@tienda.com / Admin123!</p>
-          <p><strong>Cliente:</strong> cliente@test.com / Cliente123!</p>
+                <div class="mt-6 text-center text-sm text-gray-400">
+                    ¿No tienes cuenta?
+                    <a href="register.html" class="text-amber-500 hover:text-amber-400 font-semibold">Regístrate</a>
+                </div>
+            </div>
         </div>
-      </div>
     </section>
-  </main>
 
-  <!-- FOOTER -->
-  <footer class="footer" role="contentinfo">
-    <div class="footer__container">
-      <div>
-        <h3 class="footer__title">MiTiendaOnline</h3>
-        <p>Tu tienda de confianza con los mejores productos y precios.</p>
-      </div>
-      <div>
-        <h3 class="footer__title">Enlaces Rápidos</h3>
-        <nav class="footer__links" aria-label="Enlaces del pie de página">
-          <a href="nosotros.html">Sobre Nosotros</a>
-          <a href="catalogo.html">Catálogo</a>
-          <a href="contacto.html">Contacto</a>
-        </nav>
-      </div>
-      <div>
-        <h3 class="footer__title">Contacto</h3>
-        <p>📧 info@mitienda.com</p>
-        <p>📞 (123) 456-7890</p>
-        <p>📍 Av. Principal 123, Lima</p>
-      </div>
-    </div>
-    <div class="footer__bottom">
-      <p>&copy; 2026 MiTiendaOnline. Todos los derechos reservados.</p>
-    </div>
-  </footer>
+    <script>
+    document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const btn = e.target.querySelector('button[type="submit"]');
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/cart.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Dark mode toggle
-      const toggle = document.getElementById('theme-toggle');
-      const html = document.documentElement;
-      const savedTheme = localStorage.getItem('theme') || 'light';
-      html.setAttribute('data-theme', savedTheme);
-      toggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-      toggle.addEventListener('click', () => {
-        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        html.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-        toggle.textContent = next === 'dark' ? '☀️' : '🌙';
-      });
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ingresando...';
 
-      // Menú hamburguesa
-      document.getElementById('menu-btn').addEventListener('click', () => {
-        document.getElementById('main-nav').classList.toggle('open');
-      });
+        try {
+            await Auth.signIn(email, password);
+            Toast.show('Sesión iniciada con éxito', 'success');
+            setTimeout(() => window.location.href = 'index.html', 1000);
+        } catch (err) {
+            Toast.show(err.message === 'Invalid login credentials' ? 'Credenciales inválidas' : err.message, 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+        }
     });
-  </script>
+    </script>
+
 </body>
 </html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosotros - PremiumStore</title>
+    <meta name="description" content="Conoce nuestra historia, misión y el equipo detrás de PremiumStore.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
+</head>
+<body>
+
+    <header id="main-header"></header>
+
+    <!-- HERO NOSOTROS -->
+    <section class="pt-32 pb-16 relative overflow-hidden"
+        style="background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);">
+        <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
+            <span class="section-label">Nosotros</span>
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-6">Nuestra Historia</h1>
+            <p class="text-gray-400 max-w-2xl mx-auto text-lg">
+                Nacimos con la idea de que todos merecen acceso a productos de calidad premium
+                sin tener que pagar precios exorbitantes.
+            </p>
+        </div>
+    </section>
+
+    <!-- MISIÓN Y VISIÓN -->
+    <section class="section">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-card p-8 rounded-xl border border-zinc-800 hover:border-amber-500/30 transition-all">
+                <div class="w-14 h-14 bg-amber-500/20 rounded-xl flex items-center justify-center mb-6">
+                    <i class="fas fa-bullseye text-amber-500 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Nuestra Misión</h3>
+                <p class="text-gray-400 leading-relaxed">
+                    Democratizar el acceso a productos de alta calidad, ofreciendo una experiencia de compra
+                    excepcional con precios justos, envíos rápidos y un servicio al cliente inigualable.
+                </p>
+            </div>
+            <div class="bg-card p-8 rounded-xl border border-zinc-800 hover:border-amber-500/30 transition-all">
+                <div class="w-14 h-14 bg-amber-500/20 rounded-xl flex items-center justify-center mb-6">
+                    <i class="fas fa-eye text-amber-500 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Nuestra Visión</h3>
+                <p class="text-gray-400 leading-relaxed">
+                    Convertirnos en la plataforma de e-commerce premium más confiable de Latinoamérica,
+                    donde cada compra sea una experiencia memorable y cada producto supere las expectativas.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- VALORES -->
+    <section class="section bg-zinc-900/30">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="section-label">Valores</span>
+                <h2 class="section-title">Lo que Nos Define</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center p-8">
+                    <div class="w-16 h-16 mx-auto bg-amber-500/20 rounded-full flex items-center justify-center mb-5">
+                        <i class="fas fa-medal text-amber-500 text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-lg mb-3">Calidad Premium</h4>
+                    <p class="text-gray-400 text-sm">Seleccionamos cada producto con los más altos estándares de calidad y diseño.</p>
+                </div>
+                <div class="text-center p-8">
+                    <div class="w-16 h-16 mx-auto bg-amber-500/20 rounded-full flex items-center justify-center mb-5">
+                        <i class="fas fa-hand-holding-heart text-amber-500 text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-lg mb-3">Confianza Total</h4>
+                    <p class="text-gray-400 text-sm">Garantizamos tu satisfacción con devoluciones fáciles y atención personalizada.</p>
+                </div>
+                <div class="text-center p-8">
+                    <div class="w-16 h-16 mx-auto bg-amber-500/20 rounded-full flex items-center justify-center mb-5">
+                        <i class="fas fa-leaf text-amber-500 text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-lg mb-3">Sostenibilidad</h4>
+                    <p class="text-gray-400 text-sm">Comprometidos con el medio ambiente y prácticas comerciales responsables.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EQUIPO -->
+    <section class="section">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="section-label">Equipo</span>
+                <h2 class="section-title">Conoce a Nuestro Equipo</h2>
+                <p class="section-subtitle">Personas apasionadas trabajando para darte la mejor experiencia</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
+                        alt="CEO" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-2 border-amber-500/30">
+                    <h4 class="font-bold">Carlos Mendoza</h4>
+                    <p class="text-gray-400 text-sm">CEO & Fundador</p>
+                </div>
+                <div class="text-center">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&crop=face"
+                        alt="CTO" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-2 border-amber-500/30">
+                    <h4 class="font-bold">Ana López</h4>
+                    <p class="text-gray-400 text-sm">Directora de Tecnología</p>
+                </div>
+                <div class="text-center">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=face"
+                        alt="Marketing" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-2 border-amber-500/30">
+                    <h4 class="font-bold">Miguel Torres</h4>
+                    <p class="text-gray-400 text-sm">Marketing Director</p>
+                </div>
+                <div class="text-center">
+                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face"
+                        alt="CS" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-2 border-amber-500/30">
+                    <h4 class="font-bold">Sofía García</h4>
+                    <p class="text-gray-400 text-sm">Customer Success</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NÚMEROS -->
+    <section class="py-16" style="background: linear-gradient(135deg, #1a1a2e, #0a0a0a);">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+                <div class="text-4xl font-extrabold text-amber-500">10K+</div>
+                <div class="text-gray-400 text-sm mt-2">Clientes Felices</div>
+            </div>
+            <div>
+                <div class="text-4xl font-extrabold text-amber-500">500+</div>
+                <div class="text-gray-400 text-sm mt-2">Productos</div>
+            </div>
+            <div>
+                <div class="text-4xl font-extrabold text-amber-500">50+</div>
+                <div class="text-gray-400 text-sm mt-2">Ciudades</div>
+            </div>
+            <div>
+                <div class="text-4xl font-extrabold text-amber-500">99%</div>
+                <div class="text-gray-400 text-sm mt-2">Satisfacción</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-zinc-800 py-12">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center gap-2 text-xl font-extrabold mb-4">
+                    <span class="text-amber-500">✦</span>
+                    <span>PREMIUM<span class="text-amber-500">STORE</span></span>
+                </div>
+                <p class="text-gray-400 text-sm">Calidad premium, precios justos. Tu tienda de confianza desde 2024.</p>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Navegación</h4>
+                <div class="flex flex-col gap-2 text-sm text-gray-400">
+                    <a href="index.html" class="hover:text-white transition-colors">Inicio</a>
+                    <a href="catalog.html" class="hover:text-white transition-colors">Catálogo</a>
+                    <a href="contact.html" class="hover:text-white transition-colors">Contacto</a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Ayuda</h4>
+                <div class="flex flex-col gap-2 text-sm text-gray-400">
+                    <a href="#" class="hover:text-white transition-colors">FAQ</a>
+                    <a href="#" class="hover:text-white transition-colors">Envíos</a>
+                    <a href="#" class="hover:text-white transition-colors">Devoluciones</a>
+                    <a href="#" class="hover:text-white transition-colors">Términos</a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Síguenos</h4>
+                <div class="flex gap-4 text-gray-400">
+                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 text-sm mt-10 pt-6 border-t border-zinc-800/50">
+            &copy; 2026 PremiumStore. Todos los derechos reservados.
+        </div>
+    </footer>
+
+</body>
+</html>
