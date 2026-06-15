@@ -14,13 +14,19 @@
     <script src="js/auth.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/accessibility.js"></script>
+    <script src="js/tts.js"></script>
 </head>
 <body>
 
-    <header id="main-header"></header>
+    <!-- SKIP LINK -->
+    <a href="#main-content" class="skip-link" aria-label="Saltar al contenido principal">Saltar al contenido principal</a>
 
-    <section class="min-h-screen flex items-center justify-center pt-20 pb-20"
-        style="background: radial-gradient(ellipse at center, rgba(245,158,11,0.05) 0%, transparent 70%), var(--bg-primary);">
+    <header id="main-header" role="banner"></header>
+
+    <section id="main-content" class="min-h-screen flex items-center justify-center pt-20 pb-20"
+        style="background: radial-gradient(ellipse at center, rgba(245,158,11,0.05) 0%, transparent 70%), var(--bg-primary);"
+        role="main" aria-label="Registro de usuario">
         <div class="w-full max-w-md px-4">
             <div class="bg-card border border-zinc-800 rounded-2xl p-8 animate-scale-in">
                 <div class="text-center mb-8">
@@ -31,20 +37,20 @@
 
                 <form id="register-form" class="space-y-5">
                     <div>
-                        <label class="form-label">Nombre Completo</label>
-                        <input type="text" id="full-name" class="form-input" placeholder="Tu nombre">
+                        <label class="form-label" for="full-name">Nombre Completo</label>
+                        <input type="text" id="full-name" class="form-input" placeholder="Tu nombre" autocomplete="name">
                     </div>
                     <div>
-                        <label class="form-label">Email *</label>
-                        <input type="email" id="email" class="form-input" placeholder="tu@email.com" required>
+                        <label class="form-label" for="email">Email *</label>
+                        <input type="email" id="email" class="form-input" placeholder="tu@email.com" required autocomplete="email">
                     </div>
                     <div>
-                        <label class="form-label">Contraseña *</label>
-                        <input type="password" id="password" class="form-input" placeholder="Mínimo 6 caracteres" required minlength="6">
+                        <label class="form-label" for="password">Contraseña *</label>
+                        <input type="password" id="password" class="form-input" placeholder="Mínimo 6 caracteres" required minlength="6" autocomplete="new-password">
                     </div>
                     <div>
-                        <label class="form-label">Confirmar Contraseña *</label>
-                        <input type="password" id="confirm-password" class="form-input" placeholder="Repite la contraseña" required minlength="6">
+                        <label class="form-label" for="confirm-password">Confirmar Contraseña *</label>
+                        <input type="password" id="confirm-password" class="form-input" placeholder="Repite la contraseña" required minlength="6" autocomplete="new-password">
                     </div>
                     <button type="submit" class="btn btn-primary btn-lg w-full">
                         <i class="fas fa-user-plus"></i> Crear Cuenta
@@ -81,8 +87,10 @@
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando cuenta...';
 
         try {
-            await Auth.signUp(email, password);
-            Toast.show('Cuenta creada con éxito. ¡Bienvenido!', 'success');
+            const data = await Auth.signUp(email, password);
+
+            // En modo simulación, siempre se confirma el email automáticamente
+            Toast.show('Cuenta creada con éxito. Ahora puedes iniciar sesión.', 'success');
             setTimeout(() => window.location.href = 'login.html', 1500);
         } catch (err) {
             Toast.show(err.message || 'Error al crear la cuenta', 'error');
@@ -92,5 +100,6 @@
     });
     </script>
 
+    <script src="js/chatbot.js"></script>
 </body>
 </html>

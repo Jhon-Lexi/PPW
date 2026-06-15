@@ -3,9 +3,18 @@
 // ============================================================
 
 const ContactForm = {
+    _captchaWidgetId: null,
+
     async init() {
         const form = document.getElementById('contact-form');
         if (!form) return;
+
+        // Load reCAPTCHA if not already loaded
+        if (typeof Security !== 'undefined') {
+            Security.loadRecaptcha(() => {
+                this._captchaWidgetId = Security.renderCaptcha('contact-captcha');
+            });
+        }
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -26,6 +35,21 @@ const ContactForm = {
                 return;
             }
 
+            // CAPTCHA validation
+            const captchaToken = Security.getCaptchaToken(this._captchaWidgetId);
+            if (!captchaToken) {
+                Toast.show('Completa la verificación de seguridad (CAPTCHA)', 'error');
+                return;
+            }
+
+            // Verify CAPTCHA server-side
+            const captchaResult = await Security.verifyCaptcha(captchaToken);
+            if (!captchaResult.success) {
+                Toast.show('Error en la verificación de seguridad', 'error');
+                Security.resetCaptcha(this._captchaWidgetId);
+                return;
+            }
+
             const submitBtn = form.querySelector('button[type="submit"]');
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
@@ -39,6 +63,7 @@ const ContactForm = {
 
                 Toast.show('Mensaje enviado con éxito', 'success');
                 form.reset();
+                Security.resetCaptcha(this._captchaWidgetId);
             } catch (err) {
                 Toast.show('Error al enviar: ' + err.message, 'error');
             } finally {

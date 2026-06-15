@@ -5,12 +5,15 @@
 const Admin = {
     // Verificar acceso de administrador
     async checkAccess() {
-        const isAdmin = await Auth.isAdmin();
-        if (!isAdmin) {
+        const role = await Auth.getUserRole();
+        if (role !== 'admin') {
+            document.body.classList.remove('admin-checking');
             Toast.show('Acceso denegado. Se requieren permisos de administrador.', 'error');
-            setTimeout(() => window.location.href = '../index.html', 1500);
+            setTimeout(() => window.location.href = '../index.html', 2000);
             return false;
         }
+        document.body.classList.remove('admin-checking');
+        document.body.classList.add('admin-authorized');
         return true;
     },
 
@@ -21,7 +24,6 @@ const Admin = {
         if (!await this.checkAccess()) return;
 
         try {
-            // Stats
             const { data: products } = await supabaseClient.from('products').select('*', { count: 'exact', head: false });
             const { data: profiles } = await supabaseClient.from('profiles').select('*');
             const { count: prodCount } = await supabaseClient.from('products').select('*', { count: 'exact', head: true });
@@ -31,13 +33,11 @@ const Admin = {
             const totalStock = products?.reduce((sum, p) => sum + (p.stock || 0), 0) || 0;
             const totalValue = products?.reduce((sum, p) => sum + (p.price * (p.stock || 0)), 0) || 0;
 
-            // Stats cards
             document.getElementById('stat-products').textContent = prodCount || 0;
             document.getElementById('stat-users').textContent = userCount || 0;
             document.getElementById('stat-admins').textContent = adminCount;
             document.getElementById('stat-value').textContent = `$${totalValue.toFixed(0)}`;
 
-            // Últimos productos
             const recentProducts = products?.slice(-5).reverse() || [];
             const tbody = document.getElementById('recent-products');
             if (tbody) {
@@ -50,13 +50,101 @@ const Admin = {
                     </tr>
                 `).join('');
             }
-
-        } catch (err) {
-            Toast.show('Error al cargar dashboard: ' + err.message, 'error');
+        } catch {
+            // Supabase no disponible - mostrar valores por defecto
+            document.getElementById('stat-products').textContent = '—';
+            document.getElementById('stat-users').textContent = '—';
+            document.getElementById('stat-admins').textContent = '—';
+            document.getElementById('stat-value').textContent = '—';
+            document.getElementById('recent-products').innerHTML = '<tr><td colspan="4" class="text-center py-6 text-gray-500">Modo simulación — Conecta Supabase para ver datos</td></tr>';
         }
+
+        // Verificar estado de seed users
+        this.checkSeedUsers();
     },
 
-    // ============================================================
+    // Verificar si los usuarios seed existen en Supabase
+    async checkSeedUsers() {
+        const container = document.getElementById('seed-users-status');
+        if (!container) return;
+
+        const seedEmails = [
+            CONFIG.SEED_ADMIN_EMAIL || 'admin@ejemplo.com',
+            CONFIG.SEED_USER_EMAIL || 'usuario@ejemplo.com'
+        ];
+
+        const simRoles = { 'admin@ejemplo.com': 'admin', 'usuario@ejemplo.com': 'user' };
+
+        try {
+            const { data: profiles, error } = await supabaseClient
+                .from('profiles')
+                .select('email, role')
+                .in('email', seedEmails);
+
+            let foundMap = {};
+            if (!error && profiles) {
+                profiles.forEach(p => { foundMap[p.email] = p.role; });
+            }
+
+            // En modo simulación, si Supabase no devuelve datos, usar roles simulados
+            if (Object.keys(foundMap).length === 0) {
+                foundMap = simRoles;
+            }
+
+            const rows = seedEmails.map(email => {
+                const role = foundMap[email];
+                const exists = !!role;
+                const isAdmin = role === 'admin';
+                return `
+                    <div class="flex items-center justify-between py-2 px-3 rounded-lg ${exists ? 'bg-zinc-800/50' : 'bg-red-900/20'}">
+                        <div class="flex items-center gap-3">
+                            <span class="${exists ? 'text-green-500' : 'text-red-500'}">
+                                <i class="fas ${exists ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                            </span>
+                            <span class="font-mono text-sm">${email}</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="px-2 py-0.5 rounded-full text-xs font-semibold
+                                ${isAdmin ? 'bg-amber-500/20 text-amber-500' : 'bg-zinc-700/50 text-gray-300'}">
+                                ${isAdmin ? 'Admin' : (exists ? 'Usuario' : 'No existe')}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = rows;
+
+        } catch (err) {
+            // Fallback a modo simulación
+            const rows = seedEmails.map(email => {
+                const role = simRoles[email];
+                const exists = !!role;
+                const isAdmin = role === 'admin';
+                return `
+                    <div class="flex items-center justify-between py-2 px-3 rounded-lg ${exists ? 'bg-zinc-800/50' : 'bg-red-900/20'}">
+                        <div class="flex items-center gap-3">
+                            <span class="${exists ? 'text-green-500' : 'text-red-500'}">
+                                <i class="fas ${exists ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                            </span>
+                            <span class="font-mono text-sm">${email}</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="px-2 py-0.5 rounded-full text-xs font-semibold
+                                ${isAdmin ? 'bg-amber-500/20 text-amber-500' : 'bg-zinc-700/50 text-gray-300'}">
+                                ${isAdmin ? 'Admin' : (exists ? 'Usuario' : 'No existe')}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            container.innerHTML = rows + `
+                <div class="text-xs text-gray-500 mt-2">
+                    <i class="fas fa-flask"></i> Modo simulación — Supabase no disponible
+                </div>
+            `;
+        }
+    },
     // PRODUCTOS CRUD
     // ============================================================
     async loadProducts() {
@@ -251,6 +339,42 @@ const Admin = {
 };
 
 window.Admin = Admin;
+
+// ---------- ADMIN MOBILE SIDEBAR TOGGLE ----------
+Admin.toggleMobileSidebar = function() {
+    const sidebar = document.querySelector('.admin-sidebar');
+    const overlay = document.querySelector('.admin-sidebar-overlay');
+    if (sidebar) {
+        sidebar.classList.toggle('open');
+        if (overlay) overlay.classList.toggle('active');
+        document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+    }
+};
+
+Admin.closeMobileSidebar = function() {
+    const sidebar = document.querySelector('.admin-sidebar');
+    const overlay = document.querySelector('.admin-sidebar-overlay');
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('active');
+    document.body.style.overflow = '';
+};
+
+// Close sidebar on overlay click
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('admin-sidebar-overlay')) {
+        Admin.closeMobileSidebar();
+    }
+});
+
+// Close sidebar on Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const sidebar = document.querySelector('.admin-sidebar');
+        if (sidebar?.classList.contains('open')) {
+            Admin.closeMobileSidebar();
+        }
+    }
+});
 
 // Inicialización por página
 document.addEventListener('DOMContentLoaded', () => {

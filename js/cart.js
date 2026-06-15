@@ -132,7 +132,7 @@ const Checkout = {
     paymentData: {},
 
     async open() {
-        const { data: { user } } = await supabaseClient.auth.getUser();
+        const { user } = await Auth.getCurrentUser();
         if (!user) {
             Toast.show('Debes iniciar sesión para comprar', 'error');
             setTimeout(() => window.location.href = 'login.html', 1500);
@@ -470,7 +470,7 @@ const Checkout = {
         if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...'; }
 
         try {
-            const { data: { user } } = await supabaseClient.auth.getUser();
+            const { user } = await Auth.getCurrentUser();
             if (!user) throw new Error('Debes iniciar sesión');
 
             const cart = Cart.get();
@@ -594,7 +594,7 @@ const Checkout = {
 const Orders = {
     // Obtener órdenes del usuario
     async getAll() {
-        const { data: { user } } = await supabaseClient.auth.getUser();
+        const { user } = await Auth.getCurrentUser();
         if (!user) return [];
 
         // Primero intentar desde Supabase

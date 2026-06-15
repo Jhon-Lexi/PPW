@@ -14,19 +14,24 @@
     <script src="js/auth.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/accessibility.js"></script>
+    <script src="js/tts.js"></script>
 </head>
 <body>
 
-    <header id="main-header"></header>
+    <!-- SKIP LINK -->
+    <a href="#main-content" class="skip-link" aria-label="Saltar al contenido principal">Saltar al contenido principal</a>
 
-    <section class="pt-32 pb-8 bg-zinc-900/30">
+    <header id="main-header" role="banner"></header>
+
+    <section class="pt-32 pb-8 bg-zinc-900/30" aria-label="Encabezado de pedidos">
         <div class="max-w-7xl mx-auto px-4">
             <h1 class="text-3xl md:text-4xl font-extrabold">Mis Pedidos</h1>
             <p class="text-gray-400 mt-2">Historial de tus compras en PremiumStore</p>
         </div>
     </section>
 
-    <section class="pb-20">
+    <section id="main-content" class="pb-20" role="main" aria-label="Listado de pedidos">
         <div class="max-w-4xl mx-auto px-4 space-y-4" id="orders-container">
             <div class="text-center py-20">
                 <div class="spinner mx-auto"></div>
@@ -76,10 +81,10 @@
             <div>
                 <h4 class="font-semibold mb-4">Síguenos</h4>
                 <div class="flex gap-4 text-gray-400">
-                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors text-xl" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors text-xl" title="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors text-xl" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors text-xl" title="TikTok"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
         </div>
@@ -90,7 +95,7 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', async () => {
-        const { data: { user } } = await supabaseClient.auth.getUser();
+        const { user } = await Auth.getCurrentUser();
         if (!user) {
             document.getElementById('orders-container').innerHTML = `
                 <div class="text-center py-20">
@@ -111,5 +116,6 @@
         });
     });
     </script>
+    <script src="js/chatbot.js"></script>
 </body>
 </html>

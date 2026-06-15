@@ -74,7 +74,54 @@ function renderNavbar() {
                             </div>
                         </div>
 
-                        <button class="mobile-menu-btn text-gray-300 hover:text-white text-xl" onclick="document.getElementById('nav-links').classList.toggle('open')">
+                        <div class="a11y-toolbar hide-mobile">
+                            <button id="a11y-theme-btn" onclick="Accessibility.toggleTheme()"
+                                title="Activar modo claro" aria-label="Cambiar tema claro/oscuro">
+                                <i class="fas fa-sun"></i>
+                            </button>
+                            <div class="separator"></div>
+                            <button id="a11y-guide-btn" onclick="Accessibility.toggleReadingGuide()"
+                                title="Activar lectura guiada" aria-label="Activar/desactivar lectura guiada">
+                                <i class="fas fa-low-vision"></i>
+                            </button>
+                            <div class="separator"></div>
+                            <button id="a11y-text-dec" onclick="Accessibility.decreaseTextScale()"
+                                title="Reducir tamaño de texto" aria-label="Reducir tamaño de texto">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span id="a11y-text-value" class="a11y-text-display"
+                                title="Tamaño de texto actual" aria-live="polite" aria-atomic="true">100%</span>
+                            <button id="a11y-text-inc" onclick="Accessibility.increaseTextScale()"
+                                title="Aumentar tamaño de texto" aria-label="Aumentar tamaño de texto">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button id="a11y-text-reset" onclick="Accessibility.resetTextScale()"
+                                title="Restaurar tamaño original" aria-label="Restaurar tamaño de texto original">
+                                <i class="fas fa-undo-alt"></i>
+                            </button>
+                            <div class="separator"></div>
+                            <button id="a11y-contrast-btn" onclick="Accessibility.toggleHighContrast()"
+                                title="Activar alto contraste" aria-label="Activar/desactivar alto contraste">
+                                <i class="fas fa-circle-half-stroke"></i>
+                            </button>
+                            <div class="separator"></div>
+                            <button id="a11y-tts-btn" onclick="TTS.togglePanel()"
+                                title="Lectura por voz" aria-label="Abrir panel de lectura por voz">
+                                <i class="fas fa-volume-up"></i>
+                            </button>
+                            <button id="a11y-reset-btn" onclick="Accessibility.resetAll()"
+                                title="Restablecer accesibilidad" aria-label="Restablecer toda la configuración de accesibilidad">
+                                <i class="fas fa-eraser"></i>
+                            </button>
+                        </div>
+
+                        <button id="a11y-mobile-btn" class="a11y-mobile-btn"
+                            onclick="Accessibility.toggleMobilePanel()"
+                            title="Accesibilidad" aria-label="Abrir panel de accesibilidad">
+                            <i class="fas fa-universal-access"></i>
+                        </button>
+
+                        <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Abrir menú de navegación">
                             <i class="fas fa-bars"></i>
                         </button>
                     </div>
@@ -90,25 +137,17 @@ async function renderAuthControls() {
     if (!container) return;
 
     try {
-        const { data: { user } } = await supabaseClient.auth.getUser();
+        const { user } = await Auth.getCurrentUser();
 
         if (user) {
-            // Verificar si es admin
-            let isAdmin = false;
-            try {
-                const { data: profile } = await supabaseClient
-                    .from('profiles')
-                    .select('role')
-                    .eq('id', user.id)
-                    .single();
-                isAdmin = profile?.role === 'admin';
-            } catch {}
+            const isAdmin = await Auth.isAdmin();
+            const displayName = user.email?.split('@')[0] || 'Usuario';
 
             container.innerHTML = `
                 <div class="relative" id="user-menu">
                     <button onclick="document.getElementById('user-dropdown').classList.toggle('hidden')" class="flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
                         <i class="fas fa-user-circle text-xl"></i>
-                        <span class="text-sm hidden sm:inline">${user.email?.split('@')[0] || 'Usuario'}</span>
+                        <span class="text-sm hidden sm:inline">${displayName}</span>
                         <i class="fas fa-chevron-down text-xs"></i>
                     </button>
                     <div id="user-dropdown" class="hidden absolute right-0 top-full mt-2 w-56 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl py-2 z-50 animate-slide-down">
@@ -123,15 +162,6 @@ async function renderAuthControls() {
                     </div>
                 </div>
             `;
-
-            // Cerrar dropdown al hacer click fuera
-            document.addEventListener('click', (e) => {
-                const menu = document.getElementById('user-menu');
-                const dropdown = document.getElementById('user-dropdown');
-                if (menu && dropdown && !menu.contains(e.target)) {
-                    dropdown.classList.add('hidden');
-                }
-            });
         } else {
             container.innerHTML = `
                 <div class="flex items-center gap-2">
@@ -140,7 +170,7 @@ async function renderAuthControls() {
                 </div>
             `;
         }
-    } catch (err) {
+    } catch {
         container.innerHTML = `
             <div class="flex items-center gap-2">
                 <a href="login.html" class="btn btn-secondary btn-sm">Ingresar</a>
@@ -167,10 +197,142 @@ function initScrollNav() {
     });
 }
 
+// ---------- ACTUALIZAR A11Y BUTTONS DESPUÉS DE RENDER ----------
+function updateA11yButtons() {
+    if (typeof Accessibility !== 'undefined') {
+        Accessibility.updateThemeButton();
+        Accessibility.updateReadingGuideButton();
+        Accessibility.updateTextScaleDisplay();
+        Accessibility.updateHighContrastButton();
+    }
+}
+
+// ---------- MOBILE MENU TOGGLE ----------
+function initMobileMenu() {
+    const btn = document.getElementById('mobile-menu-btn');
+    const nav = document.getElementById('nav-links');
+    if (!btn || !nav) return;
+
+    btn.addEventListener('click', () => {
+        const isOpen = nav.classList.toggle('open');
+        btn.setAttribute('aria-label', isOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación');
+        btn.innerHTML = isOpen ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+        // Cerrar panel de accesibilidad móvil si está abierto
+        if (isOpen && typeof Accessibility !== 'undefined') {
+            Accessibility.closeMobilePanel();
+        }
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+        if (nav.classList.contains('open') && !nav.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+            nav.classList.remove('open');
+            btn.setAttribute('aria-label', 'Abrir menú de navegación');
+            btn.innerHTML = '<i class="fas fa-bars"></i>';
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && nav.classList.contains('open')) {
+            nav.classList.remove('open');
+            btn.setAttribute('aria-label', 'Abrir menú de navegación');
+            btn.innerHTML = '<i class="fas fa-bars"></i>';
+            document.body.style.overflow = '';
+            btn.focus();
+        }
+    });
+
+    // Close nav link click
+    nav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            nav.classList.remove('open');
+            btn.setAttribute('aria-label', 'Abrir menú de navegación');
+            btn.innerHTML = '<i class="fas fa-bars"></i>';
+            document.body.style.overflow = '';
+        });
+    });
+}
+
+// ---------- USER DROPDOWN MOBILE ----------
+function initUserDropdown() {
+    document.addEventListener('click', (e) => {
+        const menu = document.getElementById('user-menu');
+        const dropdown = document.getElementById('user-dropdown');
+        if (menu && dropdown && !menu.contains(e.target)) {
+            dropdown.classList.add('hidden');
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const dropdown = document.getElementById('user-dropdown');
+            if (dropdown) dropdown.classList.add('hidden');
+        }
+    });
+}
+
+// ---------- INICIALIZAR USUARIOS (SEED) ----------
+async function initSeedUsers() {
+    // Ejecutar solo una vez por sesión
+    const SEED_SENTINEL = 'ps_seed_done';
+    if (sessionStorage.getItem(SEED_SENTINEL)) return;
+    sessionStorage.setItem(SEED_SENTINEL, '1');
+
+    try {
+        const result = await Auth.seedUsers();
+        if (result.success && result.users) {
+            const details = Object.values(result.users)
+                .map(u => `${u.email} (${u.created ? 'creado' : u.updated ? 'actualizado' : 'existente'})`)
+                .join(', ');
+            console.log(`[Seed] Usuarios inicializados: ${details}`);
+        } else if (result.success) {
+            console.log('[Seed] Usuarios listos');
+        }
+    } catch {
+        // Silencioso — los usuarios pueden ya existir
+    }
+}
+
+// ---------- INICIALIZAR ADMIN ----------
+async function initAdminOnLoad() {
+    // Solo en páginas de admin
+    if (window.location.pathname.includes('/admin/')) {
+        try {
+            const result = await Auth.initAdmin();
+            if (result.success && result.users) {
+                const adminInfo = result.users.admin;
+                console.log(`[Admin] ${adminInfo.email} (${adminInfo.updated ? 'actualizado' : 'listo'})`);
+            }
+        } catch {}
+    }
+}
+
 // ---------- INICIALIZACIÓN GLOBAL ----------
 document.addEventListener('DOMContentLoaded', () => {
     renderNavbar();
     renderAuthControls();
     Cart.updateBadge();
     initScrollNav();
+    initMobileMenu();
+    initUserDropdown();
+    initSeedUsers();
+    initAdminOnLoad();
+    // Wait a tick for navbar to render, then update a11y buttons
+    setTimeout(updateA11yButtons, 50);
 });
+
+// Sync mobile panel when a11y buttons are updated
+function updateMobilePanelFromDesktop() {
+    if (typeof Accessibility !== 'undefined' && Accessibility.updateMobilePanel) {
+        const panel = document.getElementById('a11y-mobile-panel');
+        if (panel && panel.classList.contains('active')) {
+            Accessibility.updateMobilePanel();
+        }
+    }
+}
+
+// Re-run when auth changes (user logs in/out)
+document.addEventListener('authRendered', updateA11yButtons);

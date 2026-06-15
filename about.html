@@ -14,14 +14,20 @@
     <script src="js/auth.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/accessibility.js"></script>
+    <script src="js/tts.js"></script>
 </head>
 <body>
 
-    <header id="main-header"></header>
+    <!-- SKIP LINK -->
+    <a href="#main-content" class="skip-link" aria-label="Saltar al contenido principal">Saltar al contenido principal</a>
+
+    <header id="main-header" role="banner"></header>
 
     <!-- HERO NOSOTROS -->
-    <section class="pt-32 pb-16 relative overflow-hidden"
-        style="background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);">
+    <section id="main-content" class="pt-32 pb-16 relative overflow-hidden"
+        style="background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);"
+        aria-label="Encabezado Nosotros">
         <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
             <span class="section-label">Nosotros</span>
             <h1 class="text-4xl md:text-5xl font-extrabold mb-6">Nuestra Historia</h1>
@@ -128,6 +134,40 @@
         </div>
     </section>
 
+    <!-- VIDEO DE YOUTUBE ACCESIBLE -->
+    <section class="section bg-zinc-900/30" aria-label="Video institucional">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <span class="section-label">Multimedia</span>
+            <h2 class="section-title">Conoce Nuestra Historia</h2>
+            <p class="section-subtitle">Un video sobre nuestra visión, misión y el equipo que hace posible PremiumStore</p>
+            <div class="video-container" role="region" aria-label="Video de presentación de PremiumStore">
+                <iframe
+                    src="https://www.youtube-nocookie.com/embed/jNQXAC9IVRw?cc_load_policy=1&cc_lang_pref=es&hl=es&modestbranding=1"
+                    title="Video institucional de PremiumStore - Nuestra historia, misión y valores (con subtítulos disponibles)"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                    loading="lazy">
+                </iframe>
+            </div>
+            <div class="video-description text-left max-w-3xl mx-auto">
+                <p><strong>Descripción del video:</strong> En este video institucional de PremiumStore, presentamos nuestra historia, desde nuestros inicios como un pequeño proyecto hasta convertirnos en una plataforma de e-commerce premium. Conoce a nuestro fundador, descubre nuestra misión de democratizar el acceso a productos de alta calidad, y entiende por qué la satisfacción del cliente está en el centro de todo lo que hacemos.</p>
+                <p class="mt-2 text-sm">Puedes activar los subtítulos desde el reproductor haciendo clic en el botón CC.</p>
+            </div>
+            <details class="transcript-section text-left max-w-3xl mx-auto">
+                <summary>Ver transcripción del video</summary>
+                <div class="transcript-text" role="region" aria-label="Transcripción del video">
+                    <p>[Música de fondo suave]</p>
+                    <p><strong>Narrador:</strong> En PremiumStore, creemos que la calidad no debería ser un lujo. Desde nuestros humildes comienzos en un pequeño garaje, nos propusimos democratizar el acceso a productos premium.</p>
+                    <p><strong>Carlos Mendoza (CEO):</strong> "Nuestra visión siempre fue clara: ofrecer lo mejor, a precios justos, con un servicio excepcional."</p>
+                    <p><strong>Narrador:</strong> Hoy, PremiumStore atiende a más de 10,000 clientes en más de 50 ciudades. Cada producto es seleccionado cuidadosamente para garantizar los más altos estándares de calidad, diseño y durabilidad.</p>
+                    <p><strong>Ana López (CTO):</strong> "La tecnología nos permite ofrecer una experiencia de compra fluida y segura, con innovación constante."</p>
+                    <p><strong>Narrador:</strong> Nuestro compromiso con la sostenibilidad y la satisfacción del cliente nos impulsa a mejorar cada día. Bienvenido a PremiumStore, donde cada compra es una experiencia memorable.</p>
+                    <p>[Música de fondo - Logotipo de PremiumStore]</p>
+                </div>
+            </details>
+        </div>
+    </section>
+
     <!-- NÚMEROS -->
     <section class="py-16" style="background: linear-gradient(135deg, #1a1a2e, #0a0a0a);">
         <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -180,10 +220,10 @@
             <div>
                 <h4 class="font-semibold mb-4">Síguenos</h4>
                 <div class="flex gap-4 text-gray-400">
-                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors text-xl" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors text-xl" title="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors text-xl" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors text-xl" title="TikTok"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
         </div>
@@ -192,5 +232,6 @@
         </div>
     </footer>
 
+    <script src="js/chatbot.js"></script>
 </body>
 </html>

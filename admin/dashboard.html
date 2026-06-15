@@ -14,6 +14,8 @@
     <script src="../js/auth.js"></script>
     <script src="../js/cart.js"></script>
     <script src="../js/main.js"></script>
+    <script src="../js/accessibility.js"></script>
+    <script src="../js/tts.js"></script>
     <script src="../js/admin.js"></script>
     <style>
         .admin-layout { display: flex; min-height: 100vh; padding-top: 64px; }
@@ -22,17 +24,30 @@
         .admin-sidebar a { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; color: #a1a1aa; transition: all 0.2s; font-size: 0.875rem; font-weight: 500; }
         .admin-sidebar a:hover { background: #1a1a1a; color: #fafafa; }
         .admin-sidebar a.active { background: rgba(245,158,11,0.1); color: #f59e0b; }
-        @media (max-width: 768px) {
-            .admin-sidebar { display: none; }
-            .admin-content { margin-left: 0; padding: 16px; }
+        body.admin-checking .admin-layout { visibility: hidden; }
+        body.admin-checking::before {
+            content: 'Verificando permisos...';
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #a1a1aa;
+            font-size: 0.9rem;
         }
+        body.admin-authorized .admin-layout { visibility: visible; }
     </style>
 </head>
-<body>
+<body class="admin-checking">
 
-    <header id="main-header"></header>
+    <!-- SKIP LINK -->
+    <a href="#main-content" class="skip-link" aria-label="Saltar al contenido principal">Saltar al contenido principal</a>
+
+    <header id="main-header" role="banner"></header>
 
     <div class="admin-layout">
+        <!-- MOBILE SIDEBAR OVERLAY -->
+        <div class="admin-sidebar-overlay" onclick="Admin.closeMobileSidebar()"></div>
+
         <!-- SIDEBAR -->
         <aside class="admin-sidebar">
             <div class="flex items-center gap-2 mb-8 px-2">
@@ -57,11 +72,16 @@
         </aside>
 
         <!-- CONTENIDO -->
-        <main class="admin-content">
+        <main id="main-content" class="admin-content" role="main">
             <div class="flex justify-between items-center mb-8">
-                <div>
-                    <h1 class="text-2xl font-extrabold">Dashboard</h1>
-                    <p class="text-gray-400 text-sm">Resumen general de la tienda</p>
+                <div class="flex items-center gap-3">
+                    <button class="admin-mobile-toggle" onclick="Admin.toggleMobileSidebar()" aria-label="Abrir menú lateral">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div>
+                        <h1 class="text-2xl font-extrabold">Dashboard</h1>
+                        <p class="text-gray-400 text-sm">Resumen general de la tienda</p>
+                    </div>
                 </div>
             </div>
 
@@ -97,6 +117,25 @@
                 </div>
             </div>
 
+            <!-- ESTADO DE USUARIOS SEED -->
+            <div class="bg-card border border-zinc-800 rounded-xl p-6 mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="font-bold text-lg">
+                        <i class="fas fa-database text-amber-500 mr-2"></i>
+                        Usuarios en Supabase
+                    </h2>
+                    <button onclick="Admin.checkSeedUsers()" class="btn btn-outline btn-sm" id="seed-refresh-btn">
+                        <i class="fas fa-sync-alt"></i> Verificar
+                    </button>
+                </div>
+                <div id="seed-users-status" class="text-sm text-gray-400">
+                    <div class="flex items-center gap-3 py-2">
+                        <div class="spinner-sm" style="width:14px;height:14px;border:2px solid #333;border-top-color:#f59e0b;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block"></div>
+                        Verificando usuarios en Supabase...
+                    </div>
+                </div>
+            </div>
+
             <!-- ÚLTIMOS PRODUCTOS -->
             <div class="bg-card border border-zinc-800 rounded-xl overflow-hidden">
                 <div class="px-6 py-4 border-b border-zinc-800 flex justify-between items-center">
@@ -122,5 +161,6 @@
         </main>
     </div>
 
+    <script src="../js/chatbot.js"></script>
 </body>
 </html>

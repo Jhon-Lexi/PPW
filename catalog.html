@@ -14,25 +14,30 @@
     <script src="js/auth.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/accessibility.js"></script>
+    <script src="js/tts.js"></script>
     <script src="js/catalog.js"></script>
 </head>
 <body>
 
-    <header id="main-header"></header>
+    <!-- SKIP LINK -->
+    <a href="#main-content" class="skip-link" aria-label="Saltar al contenido principal">Saltar al contenido principal</a>
 
-    <section class="pt-32 pb-8 bg-zinc-900/30">
+    <header id="main-header" role="banner"></header>
+
+    <section class="pt-32 pb-8 bg-zinc-900/30" aria-label="Encabezado del catálogo">
         <div class="max-w-7xl mx-auto px-4">
             <h1 class="text-3xl md:text-4xl font-extrabold">Catálogo</h1>
             <p class="text-gray-400 mt-2">Explora todos nuestros productos premium</p>
         </div>
     </section>
 
-    <section class="pb-20">
+    <section id="main-content" class="pb-20" role="main" aria-label="Listado de productos">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex flex-col lg:flex-row gap-8">
 
                 <!-- FILTROS SIDEBAR -->
-                <aside class="lg:w-72 flex-shrink-0">
+                <aside class="lg:w-72 flex-shrink-0" aria-label="Filtros de búsqueda">
                     <div class="bg-card p-6 rounded-xl border border-zinc-800 sticky top-24">
                         <h3 class="font-bold text-lg mb-6 flex items-center gap-2">
                             <i class="fas fa-filter text-amber-500"></i> Filtros
@@ -121,10 +126,10 @@
             <div>
                 <h4 class="font-semibold mb-4">Síguenos</h4>
                 <div class="flex gap-4 text-gray-400">
-                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="hover:text-amber-500 transition-colors text-xl"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors text-xl" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors text-xl" title="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors text-xl" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors text-xl" title="TikTok"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
         </div>
@@ -134,5 +139,6 @@
     </footer>
 
 
+    <script src="js/chatbot.js"></script>
 </body>
 </html>

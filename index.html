@@ -14,14 +14,19 @@
     <script src="js/auth.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/accessibility.js"></script>
+    <script src="js/tts.js"></script>
 </head>
 <body>
 
+    <!-- SKIP LINK -->
+    <a href="#main-content" class="skip-link" aria-label="Saltar al contenido principal">Saltar al contenido principal</a>
+
     <!-- HEADER -->
-    <header id="main-header"></header>
+    <header id="main-header" role="banner"></header>
 
     <!-- HERO -->
-    <section class="hero">
+    <section id="main-content" class="hero" role="main" aria-label="Página principal">
         <div class="hero-content">
             <span class="section-label animate-fade-in">Colección 2026</span>
             <h1 class="hero-title animate-fade-in stagger-1">
@@ -103,9 +108,40 @@
 
     <!-- FOOTER -->
     <footer class="border-t border-zinc-800 py-12">
-        <!-- Tu footer actual se mantiene igual -->
         <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-            <!-- ... (mantén tu footer) ... -->
+            <div>
+                <div class="flex items-center gap-2 text-xl font-extrabold mb-4">
+                    <span class="text-amber-500">✦</span>
+                    <span>PREMIUM<span class="text-amber-500">STORE</span></span>
+                </div>
+                <p class="text-gray-400 text-sm">Calidad premium, precios justos. Tu tienda de confianza desde 2024.</p>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Navegación</h4>
+                <div class="flex flex-col gap-2 text-sm text-gray-400">
+                    <a href="catalog.html" class="hover:text-white transition-colors">Catálogo</a>
+                    <a href="about.html" class="hover:text-white transition-colors">Nosotros</a>
+                    <a href="contact.html" class="hover:text-white transition-colors">Contacto</a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Ayuda</h4>
+                <div class="flex flex-col gap-2 text-sm text-gray-400">
+                    <a href="#" class="hover:text-white transition-colors">FAQ</a>
+                    <a href="#" class="hover:text-white transition-colors">Envíos</a>
+                    <a href="#" class="hover:text-white transition-colors">Devoluciones</a>
+                    <a href="#" class="hover:text-white transition-colors">Términos</a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Síguenos</h4>
+                <div class="flex gap-4 text-gray-400">
+                    <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors text-xl" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors text-xl" title="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors text-xl" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer" class="hover:text-amber-500 transition-colors text-xl" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
         </div>
         <div class="text-center text-gray-500 text-sm mt-10 pt-6 border-t border-zinc-800/50">
             &copy; 2026 PremiumStore. Todos los derechos reservados.
@@ -204,5 +240,6 @@
     });
     </script>
 
+    <script src="js/chatbot.js"></script>
 </body>
 </html>

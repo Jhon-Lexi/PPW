@@ -1,0 +1,9 @@
+{
+  "name": "premiumstore",
+  "version": "1.0.0",
+  "description": "PremiumStore e-commerce con autenticación 2FA y accesibilidad",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}

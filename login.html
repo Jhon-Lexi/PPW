@@ -14,64 +14,373 @@
     <script src="js/auth.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/accessibility.js"></script>
+    <script src="js/tts.js"></script>
+    <script src="js/security.js"></script>
 </head>
 <body>
 
-    <header id="main-header"></header>
+    <!-- SKIP LINK -->
+    <a href="#main-content" class="skip-link" aria-label="Saltar al contenido principal">Saltar al contenido principal</a>
 
-    <section class="min-h-screen flex items-center justify-center pt-20 pb-20"
-        style="background: radial-gradient(ellipse at center, rgba(245,158,11,0.05) 0%, transparent 70%), var(--bg-primary);">
+    <header id="main-header" role="banner"></header>
+
+    <section id="main-content" class="min-h-screen flex items-center justify-center pt-20 pb-20"
+        style="background: radial-gradient(ellipse at center, rgba(245,158,11,0.05) 0%, transparent 70%), var(--bg-primary);"
+        role="main" aria-label="Inicio de sesión">
         <div class="w-full max-w-md px-4">
             <div class="bg-card border border-zinc-800 rounded-2xl p-8 animate-scale-in">
-                <div class="text-center mb-8">
-                    <div class="text-4xl mb-4">✦</div>
-                    <h1 class="text-2xl font-extrabold">Bienvenido de Vuelta</h1>
-                    <p class="text-gray-400 text-sm mt-2">Ingresa a tu cuenta PremiumStore</p>
+                <!-- LOGIN FORM -->
+                <div id="login-step">
+                    <div class="text-center mb-8">
+                        <div class="text-4xl mb-4">✦</div>
+                        <h1 class="text-2xl font-extrabold">Bienvenido de Vuelta</h1>
+                        <p class="text-gray-400 text-sm mt-2">Ingresa a tu cuenta PremiumStore</p>
+                    </div>
+
+                    <form id="login-form" class="space-y-5">
+                        <div>
+                            <label class="form-label" for="email">Email</label>
+                            <input type="email" id="email" class="form-input" placeholder="tu@email.com" required autocomplete="email">
+                        </div>
+                        <div>
+                            <label class="form-label" for="password">Contraseña</label>
+                            <input type="password" id="password" class="form-input" placeholder="••••••••" required minlength="6" autocomplete="current-password">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-full">
+                            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                        </button>
+                    </form>
+
+                    <div class="mt-6 text-center text-sm text-gray-400">
+                        ¿No tienes cuenta?
+                        <a href="register.html" class="text-amber-500 hover:text-amber-400 font-semibold">Regístrate</a>
+                    </div>
                 </div>
 
-                <form id="login-form" class="space-y-5">
-                    <div>
-                        <label class="form-label">Email</label>
-                        <input type="email" id="email" class="form-input" placeholder="tu@email.com" required>
+                <!-- 2FA / OTP STEP -->
+                <div id="otp-step" style="display:none;">
+                    <div class="text-center mb-8">
+                        <div class="w-16 h-16 mx-auto bg-amber-500/20 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-shield-alt text-amber-500 text-2xl"></i>
+                        </div>
+                        <h2 class="text-xl font-extrabold mb-2">Verificación en Dos Pasos</h2>
+                        <p class="text-gray-400 text-sm">Haz clic en "Enviar Código" para recibir un código de verificación en <strong id="otp-email-display" class="text-amber-500"></strong></p>
                     </div>
-                    <div>
-                        <label class="form-label">Contraseña</label>
-                        <input type="password" id="password" class="form-input" placeholder="••••••••" required minlength="6">
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-lg w-full">
-                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
-                    </button>
-                </form>
 
-                <div class="mt-6 text-center text-sm text-gray-400">
-                    ¿No tienes cuenta?
-                    <a href="register.html" class="text-amber-500 hover:text-amber-400 font-semibold">Regístrate</a>
+                    <!-- CAPTCHA -->
+                    <div class="captcha-wrapper" id="login-captcha"></div>
+
+                    <div class="text-center">
+                        <button id="send-otp-btn" class="btn btn-primary btn-lg w-full mb-4">
+                            <i class="fas fa-envelope"></i> Enviar Código de Verificación
+                        </button>
+                    </div>
+
+                    <div id="otp-input-section" style="display:none;">
+                        <div class="otp-input-group" id="otp-inputs" role="group" aria-label="Código de verificación">
+                            <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code" aria-label="Digito 1">
+                            <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code" aria-label="Digito 2">
+                            <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code" aria-label="Digito 3">
+                            <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code" aria-label="Digito 4">
+                            <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code" aria-label="Digito 5">
+                            <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code" aria-label="Digito 6">
+                        </div>
+
+                        <div class="otp-timer" id="otp-timer">El código expira en <span id="otp-countdown">05:00</span></div>
+
+                        <button id="verify-otp-btn" class="btn btn-primary btn-lg w-full mt-4">
+                            <i class="fas fa-check-circle"></i> Verificar Código
+                        </button>
+
+                        <div class="text-center mt-4">
+                            <button id="resend-otp-btn" class="otp-resend" disabled>
+                                Reenviar código
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 text-center">
+                        <button id="back-to-login-btn" class="text-gray-400 hover:text-white text-sm bg-transparent border-none cursor-pointer">
+                            <i class="fas fa-arrow-left"></i> Volver al inicio de sesión
+                        </button>
+                    </div>
                 </div>
+
             </div>
         </div>
     </section>
 
     <script>
-    document.getElementById('login-form')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        const btn = e.target.querySelector('button[type="submit"]');
+    // ============================================================
+    // LOGIN CON 2FA - FLUJO COMPLETO
+    // ============================================================
+    // CREDENCIALES DE PRUEBA (configurables en js/config.js):
+    //   Admin:  admin@ejemplo.com     / Admin123*
+    //   Test:   usuario@ejemplo.com   / Usuario123*
+    // ============================================================
+    (function() {
+        const loginForm = document.getElementById('login-form');
+        const loginStep = document.getElementById('login-step');
+        const otpStep = document.getElementById('otp-step');
+        const emailDisplay = document.getElementById('otp-email-display');
+        const sendOtpBtn = document.getElementById('send-otp-btn');
+        const otpInputSection = document.getElementById('otp-input-section');
+        const verifyOtpBtn = document.getElementById('verify-otp-btn');
+        const resendOtpBtn = document.getElementById('resend-otp-btn');
+        const backBtn = document.getElementById('back-to-login-btn');
+        const otpInputs = document.querySelectorAll('#otp-inputs input');
+        const countdownSpan = document.getElementById('otp-countdown');
 
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ingresando...';
+        let pendingEmail = '';
+        let otpCountdownInterval = null;
+        let captchaWidgetId = null;
+        let otpResendAvailable = false;
+        let otpSending = false; // Bandera para evitar envíos duplicados
 
-        try {
-            await Auth.signIn(email, password);
-            Toast.show('Sesión iniciada con éxito', 'success');
-            setTimeout(() => window.location.href = 'index.html', 1000);
-        } catch (err) {
-            Toast.show(err.message === 'Invalid login credentials' ? 'Credenciales inválidas' : err.message, 'error');
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+        // Load CAPTCHA on 2FA step
+        function loadOtpCaptcha() {
+            Security.loadRecaptcha(() => {
+                captchaWidgetId = Security.renderCaptcha('login-captcha');
+            });
         }
-    });
+
+        // --- STEP 1: Login form ---
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const btn = loginForm.querySelector('button[type="submit"]');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+
+            try {
+                console.log('[Login] Validando credenciales...');
+                const result = await Auth.signInWith2FA(email, password);
+                pendingEmail = result.email;
+                console.log('[Login] Credenciales válidas para:', pendingEmail);
+
+                loginStep.style.display = 'none';
+                otpStep.style.display = 'block';
+                emailDisplay.textContent = pendingEmail;
+
+                loadOtpCaptcha();
+                console.log('[Login] CAPTCHA cargado, esperando clic en "Enviar Código"');
+
+                Toast.show('Credenciales válidas. Verifica tu identidad.', 'success');
+            } catch (err) {
+                console.error('[Login] Error de autenticación:', err.message);
+                Toast.show(
+                    err.message === 'Invalid login credentials' ? 'Credenciales inválidas' : err.message,
+                    'error'
+                );
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+            }
+        });
+
+        // --- Back to login ---
+        backBtn.addEventListener('click', () => {
+            Security.clear2FAState();
+            pendingEmail = '';
+            otpStep.style.display = 'none';
+            loginStep.style.display = 'block';
+            otpInputSection.style.display = 'none';
+            sendOtpBtn.style.display = '';
+            clearOTPInputs();
+            stopCountdown();
+            if (captchaWidgetId) Security.resetCaptcha(captchaWidgetId);
+        });
+
+        // --- STEP 2: Send OTP (con protección anti-doble clic) ---
+        sendOtpBtn.addEventListener('click', async () => {
+            if (otpSending) {
+                console.warn('[Login] Clic ignorado — ya hay un envío en progreso');
+                return;
+            }
+
+            // Validate CAPTCHA
+            const captchaToken = Security.getCaptchaToken(captchaWidgetId);
+            if (!captchaToken) {
+                Toast.show('Completa la verificación de seguridad (CAPTCHA)', 'error');
+                return;
+            }
+
+            const captchaResult = await Security.verifyCaptcha(captchaToken);
+            if (!captchaResult.success) {
+                Toast.show('Error en la verificación de seguridad', 'error');
+                Security.resetCaptcha(captchaWidgetId);
+                return;
+            }
+
+            otpSending = true;
+            sendOtpBtn.disabled = true;
+            sendOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando código...';
+
+            try {
+                console.log('[Login] Enviando OTP...');
+                await Security.start2FA(pendingEmail);
+                Toast.show('Código de verificación enviado a tu correo', 'success');
+                sendOtpBtn.style.display = 'none';
+                otpInputSection.style.display = 'block';
+                startCountdown(5 * 60); // 5 minutes
+                otpResendAvailable = false;
+                resendOtpBtn.disabled = true;
+                // Focus first OTP input
+                setTimeout(() => otpInputs[0]?.focus(), 300);
+            } catch (err) {
+                console.error('[Login] Error al enviar OTP:', err.message);
+                Toast.show(err.message || 'Error al enviar código', 'error');
+                sendOtpBtn.disabled = false;
+                sendOtpBtn.innerHTML = '<i class="fas fa-envelope"></i> Enviar Código de Verificación';
+            } finally {
+                otpSending = false;
+            }
+        });
+
+        // --- OTP Input navigation ---
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                const val = e.target.value;
+                if (val && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+                // Update filled state
+                input.classList.toggle('filled', val.length > 0);
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+                if (e.key === 'Enter') {
+                    verifyOTP();
+                }
+            });
+
+            // Paste support
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const paste = (e.clipboardData || window.clipboardData).getData('text');
+                const digits = paste.replace(/\D/g, '').split('');
+                digits.forEach((digit, i) => {
+                    if (i < otpInputs.length) {
+                        otpInputs[i].value = digit;
+                        otpInputs[i].classList.toggle('filled', true);
+                    }
+                });
+                // Focus next empty or last
+                const nextEmpty = Array.from(otpInputs).findIndex(inp => !inp.value);
+                const focusIdx = nextEmpty >= 0 ? nextEmpty : otpInputs.length - 1;
+                otpInputs[focusIdx].focus();
+            });
+        });
+
+        // --- Verify OTP ---
+        verifyOtpBtn.addEventListener('click', verifyOTP);
+
+        async function verifyOTP() {
+            const code = Array.from(otpInputs).map(inp => inp.value).join('');
+            if (code.length !== 6) {
+                Toast.show('Ingresa el código completo de 6 dígitos', 'error');
+                return;
+            }
+
+            verifyOtpBtn.disabled = true;
+            verifyOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+
+            try {
+                console.log('[Login] Verificando OTP para:', pendingEmail);
+                const result = await Security.verifyOTP(pendingEmail, code);
+                console.log('[Login] OTP verificado exitosamente');
+
+                // Si Supabase verificó el OTP, la sesión ya está establecida
+                // Si fue simulación, llamar a completeSignIn
+                if (!result.session) {
+                    await Auth.completeSignIn(pendingEmail);
+                }
+
+                Toast.show('Sesión iniciada con éxito', 'success');
+                stopCountdown();
+                setTimeout(() => window.location.href = 'index.html', 1000);
+            } catch (err) {
+                console.error('[Login] Error al verificar OTP:', err.message);
+                Toast.show(err.message || 'Código inválido', 'error');
+                verifyOtpBtn.disabled = false;
+                verifyOtpBtn.innerHTML = '<i class="fas fa-check-circle"></i> Verificar Código';
+                clearOTPInputs();
+            }
+        }
+
+        // --- Resend OTP ---
+        resendOtpBtn.addEventListener('click', async () => {
+            if (!otpResendAvailable) return;
+            resendOtpBtn.disabled = true;
+            resendOtpBtn.textContent = 'Reenviando...';
+
+            try {
+                console.log('[Login] Reenviando OTP...');
+                await Security.resendOTP();
+                console.log('[Login] OTP reenviado');
+                Toast.show('Nuevo código enviado', 'success');
+                startCountdown(5 * 60);
+                otpResendAvailable = false;
+                resendOtpBtn.disabled = true;
+                clearOTPInputs();
+            } catch (err) {
+                console.error('[Login] Error al reenviar OTP:', err.message);
+                Toast.show(err.message || 'Error al reenviar', 'error');
+                resendOtpBtn.disabled = false;
+                resendOtpBtn.textContent = 'Reenviar código';
+            }
+        });
+
+        // --- Helpers ---
+        function clearOTPInputs() {
+            otpInputs.forEach(inp => { inp.value = ''; inp.classList.remove('filled'); });
+            otpInputs[0]?.focus();
+        }
+
+        function startCountdown(seconds) {
+            stopCountdown();
+            let remaining = seconds;
+            updateCountdownDisplay(remaining);
+            otpCountdownInterval = setInterval(() => {
+                remaining--;
+                updateCountdownDisplay(remaining);
+                if (remaining <= 0) {
+                    stopCountdown();
+                    Toast.show('El código ha expirado. Solicita uno nuevo.', 'info');
+                    otpResendAvailable = true;
+                    resendOtpBtn.disabled = false;
+                    resendOtpBtn.textContent = 'Reenviar código';
+                }
+            }, 1000);
+        }
+
+        function stopCountdown() {
+            if (otpCountdownInterval) {
+                clearInterval(otpCountdownInterval);
+                otpCountdownInterval = null;
+            }
+        }
+
+        function updateCountdownDisplay(seconds) {
+            const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+            const s = String(seconds % 60).padStart(2, '0');
+            countdownSpan.textContent = `${m}:${s}`;
+        }
+
+        // --- Keyboard shortcut: Escape to go back ---
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && otpStep.style.display === 'block') {
+                backBtn.click();
+            }
+        });
+    })();
     </script>
 
+    <script src="js/chatbot.js"></script>
 </body>
 </html>
